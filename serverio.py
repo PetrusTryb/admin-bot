@@ -73,7 +73,7 @@ class Server:
 
         user_dir = os.path.join(self.home_dir, name)
 
-        r1 = subprocess.run(['useradd', '-m', '-d', user_dir, '-g', 'smiertelnicy', '-s', '/sbin/nologin', name])
+        r1 = subprocess.run(['useradd', '-m', '-d', user_dir, '-g', self.mortal_group, '-s', '/sbin/nologin', name])
 
         if r1.returncode:
             if r1.returncode == 9:
@@ -82,7 +82,6 @@ class Server:
 
         r2 = subprocess.run(['edquota', '-p', self.sample_quota, name])
         if r2.returncode:
-            self.kill(name)
             raise EdquotaError(name, self.sample_quota, r2.returncode)
 
         
