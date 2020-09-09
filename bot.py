@@ -31,10 +31,8 @@ async def info(ctx):
     await ctx.send(out)
 @bot.command(help="tworzy nowe konto użytkownika i wysyła hasło na priv")
 async def register(ctx):
-    sender = ctx.message.author.display_name
+    sender = ctx.message.author.id
     print(sender)
-    username=re.sub('[^A-Za-z0-9]+', '', sender)
-    print(username)
     await ctx.send(sudo("useradd -m -d /smietnik/${username} -g smiertelnicy -s /sbin/nologin ${username}"))
     await ctx.send(sudo("edquota -p samplequota user"))
 bot.run(TOKEN)
