@@ -1,4 +1,4 @@
-import os,re,subprocess
+import os,re
 
 import discord
 from discord.ext import commands
@@ -9,9 +9,8 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 PASSWORD = os.getenv('ROOT_PASSWORD')
 bot = commands.Bot(command_prefix='/')
 def sudo(command):
-    f=subprocess.popen("sudo -S %s"%(command), 'w')
+    f=os.popen("sudo -S %s"%(command), 'w')
     f.write(PASSWORD)
-    f.wait()
 @bot.command()
 async def test(ctx):
     await ctx.send("Dostępne komendy:\n\
@@ -34,7 +33,6 @@ async def register(ctx,nick):
         await ctx.send("Nie dla psa")
         return
     nick=re.sub('[^A-Za-z0-9]+', '', nick)
-    sudo(f"useradd -m -d /smietnik/{nick} -g smiertelnicy -s /sbin/nologin {nick}")
-    sudo("edquota -p samplequota "+nick)
+    sudo(f"useradd -m -d /smietnik/{nick} -g smiertelnicy -s /sbin/nologin {nick} && edquota -p samplequota {nick}")
     await ctx.send("Gotowe! Utworzono użytkownika "+nick)
 bot.run(TOKEN)
