@@ -33,7 +33,7 @@ async def info(ctx):
 async def register(ctx):
     sender = ctx.message.author.id
     print(sender)
-    await ctx.send(sudo("useradd -m -d /smietnik/${username} -g smiertelnicy -s /sbin/nologin ${username}"))
-    await ctx.send(sudo("edquota -p samplequota user"))
+    await ctx.send(sudo("useradd -m -d /smietnik/{user} -g smiertelnicy -s /sbin/nologin {user}").format(user=sender))
+    await ctx.send(sudo("edquota -p samplequota "+str(sender)))
 bot.run(TOKEN)
 #client.run(TOKEN)
