@@ -11,15 +11,13 @@ bot = commands.Bot(command_prefix='/')
 def sudo(command):
     f=os.popen("sudo -S %s"%(command), 'w')
     f.write(PASSWORD)
-    out=f.read()
-    return out
 @bot.command()
 async def test(ctx):
     await ctx.send("Dostępne komendy:\n\
         /help - lista poleceń\n\
         /info - podstawowe informacje o serwerze\n\
         /password - generuje nowe hasło dla użytkownika i wysyła mu je na priv\n\
-        /register - tworzy nowe konto użytkownika i wysyła hasło na priv\n\
+        /register <nick> - tworzy nowe konto użytkownika o nazwie\n\
         /kill* <nick> - usuwa konto użytkownika wraz ze wszystkimi danymi\n\
         /clear* <nick> - czyści folder domowy użytkownika\n\
         /quota* - pokazuje ranking zapełnienia dysku przez poszczególnych użytkowników\n\
@@ -29,11 +27,14 @@ async def info(ctx):
     f = os.popen('neofetch --stdout')
     out = f.read()
     await ctx.send(out)
-@bot.command(help="tworzy nowe konto użytkownika i wysyła hasło na priv")
-async def register(ctx):
-    sender = ctx.message.author.id
-    print(sender)
-    await ctx.send(sudo("useradd -m -d /smietnik/{user} -g smiertelnicy -s /sbin/nologin {user}").format(user=sender))
-    await ctx.send(sudo("edquota -p samplequota "+str(sender)))
+@bot.command(help="tworzy nowe konto użytkownika")
+async def register(ctx,nick):
+    if(ctx.message.author.top_role.name!="Bogowie"):
+        await ctx.send("Nie dla psa")
+        return
+    nick=re.sub('[^A-Za-z0-9]+', '', nick)
+    sudo(f"useradd -m -d /smietnik/{nick} -g smiertelnicy -s /sbin/nologin {nick}")
+    sudo("edquota -p samplequota "+nick)
+    await ctx.send("Gotowe! Utworzono użytkownika "+nick)
 bot.run(TOKEN)
 #client.run(TOKEN)
