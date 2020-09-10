@@ -9,8 +9,8 @@ class Manager:
     SETTINGS_FILEPATH = 'settings.json'
 
     def __init__(self):
-        self.settings = loadDb(self.SETTINGS_FILEPATH)
-        self.db = loadDb(self.DB_FILEPATH)
+        self.settings = self.loadDb(self.SETTINGS_FILEPATH)
+        self.db = self.loadDb(self.DB_FILEPATH)
         if len(self.db) == 0:
             self.db = []
 
@@ -30,7 +30,7 @@ class Manager:
     # serverio commands
 
     def info(self):
-        print(self.server.info())
+        yield(self.server.info())
 
     def register(self, name):
         try:
@@ -42,14 +42,14 @@ class Manager:
             })
             self.saveDb(self.DB_FILEPATH, self.db)
 
-            print(f"Successfully registered '{name}' user")
+            yield(f"Successfully registered '{name}' user")
 
         except serverio.UnsafeNameError as e:
-            print(f"Incorrect username: {e}")
+            yield(f"Incorrect username: {e}")
         except serverio.RegistrationError as e:
-            print(f"{e}")
+            yield(f"{e}")
         except Exception as e:
-            print(f"Unknown exception occured: {e}")
+            yield(f"Unknown exception occured: {e}")
 
     def kill(self, name):
         try:
@@ -61,14 +61,14 @@ class Manager:
                     self.db.remove(user)
                     break
             self.saveDb(self.DB_FILEPATH, self.db)
-            print("User removed successfully")
+            yield("User removed successfully")
 
         except serverio.UnsafeNameError as e:
-            print(f"Incorrect username: {e}")
+            yield(f"Incorrect username: {e}")
         except serverio.MurderError as e:
-            print(f"{e}")
+            yield(f"{e}")
         except serverio.DeletionError as e:
-            print(f"Couldn't remove user dir: {e}")
+            yield(f"Couldn't remove user dir: {e}")
 
             # remove from db anyway
             for user in self.db:
@@ -76,39 +76,39 @@ class Manager:
                     self.db.remove(user)
                     break
             self.saveDb(self.DB_FILEPATH, self.db)
-            print("User removed")
+            yield("User removed")
 
         except Exception as e:
-            print(f"Unknown exception occured: {e}")
+            yield(f"Unknown exception occured: {e}")
 
     def purge(self, name):
         try:
             self.server.purge(name)
-            print(f"{name}'s dir content successfully removed")
+            yield(f"{name}'s dir content successfully removed")
         except serverio.UnsafeNameError as e:
-            print(f"Incorrect username: {e}")
+            yield(f"Incorrect username: {e}")
         except serverio.DeletionError as e:
-            print(f"Failed to clear user's dir content: {e}")
+            yield(f"Failed to clear user's dir content: {e}")
         except Exception as e:
-            print(f"Unknown exception occured: {e}")
+            yield(f"Unknown exception occured: {e}")
 
     def reset(self, name, password):
         try:
             self.server.reset(name, password)
-            print(f"{name}'s password resetted successfully")
+            yield(f"{name}'s password resetted successfully")
         except serverio.UnsafeNameError as e:
-            print(f"Incorrect username: {e}")
+            yield(f"Incorrect username: {e}")
         except serverio.ResetError as e:
-            print(f"Failed to reset password: {e}")
+            yield(f"Failed to reset password: {e}")
         except Exception as e:
-            print(f"Unknown exception occured: {e}")
+            yield(f"Unknown exception occured: {e}")
 
     def quota(self, name):
         #TODO
         try:
-            print(f"{name}'s dir size: {self.server.quota(name)}")
+            yield(f"{name}'s dir size: {self.server.quota(name)}")
         except Exception as e:
-            print(f"Unknown exception occured: {e}")
+            yield(f"Unknown exception occured: {e}")
 
     @property
     def parser(self):
