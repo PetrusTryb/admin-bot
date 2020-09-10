@@ -67,6 +67,10 @@ class Server:
         self.sample_quota = sample_quota
         self.mortal_group = mortal_group
 
+    def info(self):
+        #TODO
+        return "Linux"
+
     def register(self, name):
         if not name.isalnum():
             raise UnsafeNameError(name)
