@@ -123,7 +123,7 @@ class Server:
         if not name.isalnum() or not password.isalnum():
             raise UnsafeNameError(name)
         
-        r1.subprocess.run(["chpasswd"], input="%s:%s" % (name, password))
+        r1 = subprocess.run(["chpasswd"], input="%s:%s" % (name, password))
         if r1.returncode:
             raise ResetError(name)
 
