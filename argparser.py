@@ -78,6 +78,6 @@ class ArgParser:
                         self.helpCommand(sys.argv[1])
                         return
 
-                command['func'](*sys.argv[2:])
+                print('\n'.join(command['func'](*sys.argv[2:])))
                 return
         self.noCommand(sys.argv[1])
