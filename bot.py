@@ -112,7 +112,8 @@ async def whois(ctx):
             found=False
             for i in config["discords"]:
                 if(config["discords"][i]==user):
-                    await ctx.send(user)
+                    res=await bot.fetch_user(i)
+                    await ctx.send(res.nick)
                     found=True
                     break
             if(not found):
