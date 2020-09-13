@@ -38,7 +38,7 @@ async def register(ctx):
             else:
                 await ctx.send("Nie można utworzyć konta dla: "+user)
     for user in ctx.message.mentions:
-        out = "test"#serverManager.create_mortal()
+        out = serverManager.create_mortal()
         if(out):
             config["mortals"]=list(serverManager.mortals)
             config["discords"][str(user.id)]=out
