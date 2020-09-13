@@ -34,6 +34,7 @@ async def register(ctx):
                 config["mortals"]=list(serverManager.mortals)
                 config["discords"][str(user.id)]=out
                 saveConfig()
+                await ctx.send("Utworzono użytkownika: "+out)
                 await user.send("Pomyślnie utworzono konto na serwerze!\nLogin: "+out)
             else:
                 await ctx.send("Nie można utworzyć konta dla: "+user)
@@ -43,6 +44,7 @@ async def register(ctx):
             config["mortals"]=list(serverManager.mortals)
             config["discords"][str(user.id)]=out
             saveConfig()
+            await ctx.send("Utworzono użytkownika: "+out)
             await user.send("Pomyślnie utworzono konto na serwerze!\nLogin: "+out)
         else:
             await ctx.send("Nie można utworzyć konta dla: "+user)
@@ -77,10 +79,9 @@ async def password(ctx):
     try:
         user=config["discords"][str(ctx.author.id)]
         newdata=serverManager.password_reset(user)
-        await ctx.author.send("Twoje hasło na serwerze zostało zresetowane!")
-        await ctx.author.send("Nowe hasło do przesyłania plików:"+newdata[0])
-        await ctx.author.send("Nowe hasło do bazy danych:"+newdata[1])
-        await ctx.send("Sprawdź wiadomości prywatne.")
+        await ctx.send("Pomyślnie ustawiono nowe hasła.")
+        await ctx.author.send("Nowe hasło do przesyłania plików: `"+newdata[0]+"`")
+        await ctx.author.send("Nowe hasło do bazy danych: `"+newdata[1]+"`")
     except:
         await ctx.send("Nie udało się zresetować hasła")
 bot.run(TOKEN)
