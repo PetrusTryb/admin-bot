@@ -75,7 +75,7 @@ async def kill(ctx):
             await ctx.send("Nie można usunąć konta")
     for user in ctx.message.content.split()[1:]:
         try:
-            if(user[0]!="@"):
+            if("@" not in user):
                 serverManager.remove_mortal(user)
                 config["mortals"]=list(serverManager.mortals)
                 for i in config["discords"]:
@@ -91,7 +91,7 @@ async def kill(ctx):
 async def password(ctx):
     try:
         newdata=recovery(ctx.author.id)
-        await ctx.send("Pomyślnie ustawiono nowe hasła.")
+        await ctx.send("Pomyślnie ustawiono nowe hasła dla: "+config["discords"][str(ctx.author.id)])
         await ctx.author.send("Nowe hasło do przesyłania plików: `"+newdata[0]+"`\n"+"Nowe hasło do bazy danych: `"+newdata[1]+"`")
     except:
         await ctx.send("Nie udało się zresetować hasła")
@@ -108,7 +108,7 @@ async def whois(ctx):
         except:
             await ctx.send("Ten użytkownik nie posiada konta na serwerze.")
     for user in ctx.message.content.split()[1:]:
-        if(user[0]!="@"):
+        if("@" not in user):
             found=False
             for i in config["discords"]:
                 if(config["discords"][i]==user):
