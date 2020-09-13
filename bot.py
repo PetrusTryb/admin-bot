@@ -108,14 +108,14 @@ async def whois(ctx):
         except:
             await ctx.send("Ten użytkownik nie posiada konta na serwerze.")
     for user in ctx.message.content.split()[1:]:
-        try:
-            if(user[0]!="@"):
-                found=False
-                for i in config["discords"]:
-                    if(config["discords"][i]==user):
-                        await ctx.send(user)
-                        found=True
-                        break
-                if(not found):
-                    await ctx.send("Ten użytkownik nie istnieje.")
+        if(user[0]!="@"):
+            found=False
+            for i in config["discords"]:
+                if(config["discords"][i]==user):
+                    await ctx.send(user)
+                    found=True
+                    break
+            if(not found):
+                await ctx.send("Ten użytkownik nie istnieje.")
+
 bot.run(TOKEN)
