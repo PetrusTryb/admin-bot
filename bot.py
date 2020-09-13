@@ -14,14 +14,16 @@ def saveConfig():
         f.write(json.dumps(config))
 def isGod(uid):
     return (str(uid) in config["userapi"]["admins"])
+def recovery(discord_id):
+    user=config["discords"][str(discord_id)]
+    return serverManager.password_reset(user)
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix='/')
 config=getConfig()
 serverManager = MortalManager.from_save(config)
-
-
+@commands.cooldown(1,10)
 @bot.command(help="Tworzy nowe konto użytkownika")
 async def register(ctx):
     if(not isGod(ctx.author.id)):
@@ -29,25 +31,34 @@ async def register(ctx):
         return
     for rank in ctx.message.role_mentions:
         for user in rank.members:
+            if(str(user.id) in config["discords"]):
+                await ctx.send("Ten użytkownik ma już konto: "+config["discords"][str(user.id)])
+                return
             out = serverManager.create_mortal()
             if(out):
                 config["mortals"]=list(serverManager.mortals)
                 config["discords"][str(user.id)]=out
                 saveConfig()
                 await ctx.send("Utworzono użytkownika: "+out)
-                await user.send("Pomyślnie utworzono konto na serwerze!\nLogin: "+out)
+                newdata=recovery(user.id)
+                await user.send("Utworzono dla Ciebie konto na serwerze szkolnym!\nWięcej informacji: http://153.19.168.9/\nLogin: `"+out+"`\nHasło do przesyłania plików: `"+newdata[0]+"`\n"+"Hasło do bazy danych: `"+newdata[1]+"`")
             else:
                 await ctx.send("Nie można utworzyć konta dla: "+user)
     for user in ctx.message.mentions:
+        if(str(user.id) in config["discords"]):
+                await ctx.send("Ten użytkownik ma już konto: "+config["discords"][str(user.id)])
+                return
         out = serverManager.create_mortal()
         if(out):
             config["mortals"]=list(serverManager.mortals)
             config["discords"][str(user.id)]=out
             saveConfig()
             await ctx.send("Utworzono użytkownika: "+out)
-            await user.send("Pomyślnie utworzono konto na serwerze!\nLogin: "+out)
+            newdata=recovery(user.id)
+            await user.send("Utworzono dla Ciebie konto na serwerze szkolnym!\nWięcej informacji: http://153.19.168.9/\nLogin: `"+out+"`\nHasło do przesyłania plików: `"+newdata[0]+"`\n"+"Hasło do bazy danych: `"+newdata[1]+"`")
         else:
             await ctx.send("Nie można utworzyć konta dla: "+user)
+@commands.cooldown(1,10)
 @bot.command(help="Usuwa konto użytkownika wraz ze wszystkimi danymi")
 async def kill(ctx):
     if(not isGod(ctx.author.id)):
@@ -64,24 +75,36 @@ async def kill(ctx):
             await ctx.send("Nie można usunąć konta")
     for user in ctx.message.content.split()[1:]:
         try:
-            serverManager.remove_mortal(user)
-            config["mortals"]=list(serverManager.mortals)
-            for i in config["discords"]:
-                if(config["discords"][i]==user):
-                    config["discords"].pop(i)
-                    break
-            saveConfig()
-            await ctx.send("Usunięto konto: "+user)
+            if(user[0]!="@"):
+                serverManager.remove_mortal(user)
+                config["mortals"]=list(serverManager.mortals)
+                for i in config["discords"]:
+                    if(config["discords"][i]==user):
+                        config["discords"].pop(i)
+                        break
+                saveConfig()
+                await ctx.send("Usunięto konto: "+user)
         except:
             await ctx.send("Nie można usunąć konta")
+@commands.cooldown(1,10)
 @bot.command(help="Zmienia hasło użytkownika")
 async def password(ctx):
     try:
-        user=config["discords"][str(ctx.author.id)]
-        newdata=serverManager.password_reset(user)
+        newdata=recovery(ctx.author.id)
         await ctx.send("Pomyślnie ustawiono nowe hasła.")
-        await ctx.author.send("Nowe hasło do przesyłania plików: `"+newdata[0]+"`")
-        await ctx.author.send("Nowe hasło do bazy danych: `"+newdata[1]+"`")
+        await ctx.author.send("Nowe hasło do przesyłania plików: `"+newdata[0]+"`\n"+"Nowe hasło do bazy danych: `"+newdata[1]+"`")
     except:
         await ctx.send("Nie udało się zresetować hasła")
+@commands.cooldown(1,10)
+@bot.command(help="Sprawdza, które konta są powiązane z danymi użytkownikami")
+async def whois(ctx):
+    if(not isGod(ctx.author.id)):
+        await ctx.send("Nie dla psa!")
+        return
+    for user in ctx.message.mentions:
+        try:
+            nick=config["discords"][str(user.id)]
+            await ctx.send(nick)
+        except:
+            await ctx.send("Ten użytkownik nie posiada konta na serwerze.")
 bot.run(TOKEN)
