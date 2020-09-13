@@ -113,7 +113,7 @@ async def whois(ctx):
             for i in config["discords"]:
                 if(config["discords"][i]==user):
                     res=await bot.fetch_user(int(i))
-                    await ctx.send(res.nick)
+                    await ctx.send(res.display_name)
                     found=True
                     break
             if(not found):
