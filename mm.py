@@ -220,11 +220,11 @@ if __name__ == '__main__':
     parser_create.set_defaults(op='create')
 
     parser_remove = subparsers.add_parser('remove', help='removes user')
-    parser_remove.add_argument('name')
+    parser_remove.add_argument('names', action="extend", nargs="+", type=str)
     parser_remove.set_defaults(op='remove')
 
     parser_chpass = subparsers.add_parser('chpass', help='changes password')
-    parser_chpass.add_argument('name')
+    parser_chpass.add_argument('names', action="extend", nargs="+", type=str)
     parser_chpass.set_defaults(op='chpass')
 
     args = parser.parse_args(sys.argv[1:])
@@ -233,14 +233,16 @@ if __name__ == '__main__':
         with open(args.conf, 'r') as conffile:
             mm = MortalManager.from_save(json.load(conffile))
     else:
-        mm = MortalManager(UserAPI('/smietnik', 'smiertelnicy', None))
+        mm = MortalManager(UserAPI('/smietnik', 'smiertelnicy', 'samplequota'))
     
     if args.op == 'create':
         print(mm.create_mortal())
     elif args.op == 'remove':
-        mm.remove_mortal(args.name)
+        for name in args.names:
+            mm.remove_mortal(name)
     elif args.op == 'chpass':
-        print(mm.password_reset(args.name))
+        for name in args.names:
+            print(mm.password_reset(name))
 
     with open(args.conf, 'w') as conffile:
         json.dump(mm.dump_save(), conffile)
