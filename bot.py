@@ -70,7 +70,7 @@ async def kill(ctx):
             config["mortals"]=list(serverManager.mortals)
             config["discords"].pop(str(user.id),None)
             saveConfig()
-            await ctx.send("Usunięto konto: "+config["discords"][str(user.id)])
+            await ctx.send("Usunięto konto: "+user.display_name)
         except:
             await ctx.send("Nie można usunąć konta")
     for user in ctx.message.content.split()[1:]:
