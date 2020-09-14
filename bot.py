@@ -33,7 +33,7 @@ async def register(ctx):
         for user in rank.members:
             if(str(user.id) in config["discords"]):
                 await ctx.send("Ten użytkownik ma już konto: "+config["discords"][str(user.id)])
-                return
+                continue
             out = serverManager.create_mortal()
             if(out):
                 config["mortals"]=list(serverManager.mortals)
@@ -47,7 +47,7 @@ async def register(ctx):
     for user in ctx.message.mentions:
         if(str(user.id) in config["discords"]):
                 await ctx.send("Ten użytkownik ma już konto: "+config["discords"][str(user.id)])
-                return
+                continue
         out = serverManager.create_mortal()
         if(out):
             config["mortals"]=list(serverManager.mortals)
