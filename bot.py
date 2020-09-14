@@ -27,7 +27,7 @@ serverManager = MortalManager.from_save(config)
 @bot.command(help="Tworzy nowe konto użytkownika")
 async def register(ctx):
     if(not isGod(ctx.author.id)):
-        await ctx.send("Nie dla psa!")
+        await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     for rank in ctx.message.role_mentions:
         for user in rank.members:
@@ -41,7 +41,7 @@ async def register(ctx):
                 saveConfig()
                 await ctx.send("Utworzono użytkownika: "+out)
                 newdata=recovery(user.id)
-                await user.send("Utworzono dla Ciebie konto na serwerze szkolnym!\nWięcej informacji: http://153.19.168.9/\nLogin: `"+out+"`\nHasło do przesyłania plików: `"+newdata[0]+"`\n"+"Hasło do bazy danych: `"+newdata[1]+"`")
+                await user.send("Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `"+out+"`\nHasło do przesyłania plików: `"+newdata[0]+"`\n"+"Hasło do bazy danych: `"+newdata[1]+"`")
             else:
                 await ctx.send("Nie można utworzyć konta dla: "+user)
     for user in ctx.message.mentions:
@@ -55,14 +55,14 @@ async def register(ctx):
             saveConfig()
             await ctx.send("Utworzono użytkownika: "+out)
             newdata=recovery(user.id)
-            await user.send("Utworzono dla Ciebie konto na serwerze szkolnym!\nWięcej informacji: http://153.19.168.9/\nLogin: `"+out+"`\nHasło do przesyłania plików: `"+newdata[0]+"`\n"+"Hasło do bazy danych: `"+newdata[1]+"`")
+            await user.send("Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `"+out+"`\nHasło do przesyłania plików: `"+newdata[0]+"`\n"+"Hasło do bazy danych: `"+newdata[1]+"`")
         else:
             await ctx.send("Nie można utworzyć konta dla: "+user)
 @commands.cooldown(1,10)
 @bot.command(help="Usuwa konto użytkownika wraz ze wszystkimi danymi")
 async def kill(ctx):
     if(not isGod(ctx.author.id)):
-        await ctx.send("Nie dla psa!")
+        await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     for user in ctx.message.mentions:
         try:
@@ -99,7 +99,7 @@ async def password(ctx):
 @bot.command(help="Sprawdza, które konta są powiązane z danymi użytkownikami")
 async def whois(ctx):
     if(not isGod(ctx.author.id)):
-        await ctx.send("Nie dla psa!")
+        await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     for user in ctx.message.mentions:
         try:
