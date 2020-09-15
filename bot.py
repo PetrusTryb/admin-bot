@@ -26,8 +26,6 @@ serverManager = MortalManager.from_save(config)
 @commands.cooldown(1,10)
 @bot.command(help="Tworzy nowe konto użytkownika")
 async def register(ctx):
-    cross = bot.get_emoji(558322190060093441)
-    await ctx.message.add_reaction(cross)
     if(not isGod(ctx.author.id)):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
@@ -63,8 +61,6 @@ async def register(ctx):
 @commands.cooldown(1,10)
 @bot.command(help="Usuwa konto użytkownika wraz ze wszystkimi danymi")
 async def kill(ctx):
-    cross = bot.get_emoji(558322190060093441)
-    await ctx.message.add_reaction(cross)
     if(not isGod(ctx.author.id)):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
@@ -93,8 +89,6 @@ async def kill(ctx):
 @commands.cooldown(1,10)
 @bot.command(help="Zmienia hasło użytkownika")
 async def password(ctx):
-    cross = bot.get_emoji(558322190060093441)
-    await ctx.message.add_reaction(cross)
     try:
         newdata=recovery(ctx.author.id)
         await ctx.send("Pomyślnie ustawiono nowe hasła dla: "+config["discords"][str(ctx.author.id)])
@@ -104,8 +98,6 @@ async def password(ctx):
 @commands.cooldown(1,10)
 @bot.command(help="Sprawdza, które konta są powiązane z danymi użytkownikami")
 async def whois(ctx):
-    cross = bot.get_emoji(558322190060093441)
-    await ctx.message.add_reaction(cross)
     if(not isGod(ctx.author.id)):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
