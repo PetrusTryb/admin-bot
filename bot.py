@@ -101,7 +101,7 @@ async def password(ctx):
 @commands.cooldown(1,10)
 @bot.command(help="Sprawdza, które konta są powiązane z danymi użytkownikami")
 async def whois(ctx):
-    await ctx.message.add_reaction("<:greenCheckmark:558322116685070378>")
+    await ctx.message.add_reaction(bot.get_emoji(558322116685070378))
     if(not isGod(ctx.author.id)):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
