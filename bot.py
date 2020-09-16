@@ -24,6 +24,7 @@ EMPTY_DB = {"discords": {}, "mortals": []}
 
 def getDb():
     if not os.path.isfile("db.json"):
+        logging.info("New database!")
         return EMPTY_DB
     with open ("db.json","r") as f:
         return json.loads(f.read())
@@ -184,15 +185,17 @@ async def whois(ctx):
     if not isGod(ctx.author.id):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
-        
+
     logging.info("whois called")
     #await ctx.add_reaction('⌛')
     await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):
+    logging.info("Whois starting")
     # check by discord username
     for user in ctx.message.mentions:
         try:
+            logging.info(f"Whois for {str(user.id)}")
             nick = db["discords"][str(user.id)]
             await ctx.send(nick)
         except:
@@ -210,6 +213,8 @@ async def whoisCoro(ctx):
                     break
             if not found:
                 await ctx.send("Ten użytkownik nie istnieje.")
+    
+    logging.info("Whois ended")
 
 def main():
     # Run queues and bot
