@@ -3,6 +3,7 @@ import re
 import json
 import asyncio
 import discord
+import logging
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -35,6 +36,10 @@ def getMentionedUsers(ctx):
     return users
 
 # --------------- Initial setup ---------------
+
+# Logs
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, filename="/var/log/adminbot.log", filemode="w+")
+logging.info("Starting new session...")
 
 # Queue
 mainQueue = Tasker()    # for tasks that change users data (register, kill, password, etc..)
@@ -188,3 +193,5 @@ asyncio.gather(
     secondQueue.start(),
     bot.start(TOKEN),
 )
+
+logging.warning("Execution ended (that shouldn't be possible)")
