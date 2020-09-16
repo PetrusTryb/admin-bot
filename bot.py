@@ -64,7 +64,7 @@ async def register(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
-    mainQueue.addJob(registerCoro(ctx))
+    await mainQueue.addJob(registerCoro(ctx))
 
 async def registerCoro(ctx):
     for user in getMentionedUsers(ctx):
@@ -102,7 +102,7 @@ async def kill(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
-    mainQueue.addJob(killCoro(ctx))
+    await mainQueue.addJob(killCoro(ctx))
 
 async def killCoro(ctx):
     # Remove by discord username
@@ -144,7 +144,7 @@ async def killCoro(ctx):
 @bot.command(help="Zmienia hasło użytkownika")
 async def password(ctx):
     """ Reset caller's password """
-    mainQueue.addJob(passwordCoro(ctx))
+    await mainQueue.addJob(passwordCoro(ctx))
 
 async def passwordCoro(ctx):
     try:
@@ -163,7 +163,7 @@ async def whois(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
-    secondQueue.addJob(whoisCoro(ctx))
+    await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):
     # check by discord username
@@ -192,7 +192,7 @@ def main():
     asyncio.get_event_loop().run_until_complete(mainQueue.start())
     asyncio.get_event_loop().run_until_complete(secondQueue.start())
     asyncio.get_event_loop().run_until_complete(bot.start(TOKEN))
-    
+
 if __name__ == "__main__":
     main()
 
