@@ -30,7 +30,7 @@ def getDb():
 
 def saveDb():
     with open ("db.json","w") as f:
-        f.write(json.dumps(config))
+        f.write(json.dumps(db))
 
 def isGod(uid):
     return (str(uid) in config["userapi"]["admins"])
