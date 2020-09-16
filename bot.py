@@ -10,20 +10,33 @@ from dotenv import load_dotenv
 from mm import MortalManager
 from tasker import Tasker
 
-
+# Config should be readonly!
 def getConfig():
     with open ("conf.json","r") as f:
         return json.loads(f.read())
 
-def saveConfig():
-    with open ("conf.json","w") as f:
+#def saveConfig():
+#    with open ("conf.json","w") as f:
+#        f.write(json.dumps(config))
+
+# TODO: Add real database support
+EMPTY_DB = {"discords": {}, "mortals": []}
+
+def getDb():
+    if not os.path.isfile("db.json"):
+        return EMPTY_DB
+    with open ("db.json","r") as f:
+        return json.loads(f.read())
+
+def saveDb():
+    with open ("db.json","w") as f:
         f.write(json.dumps(config))
 
 def isGod(uid):
     return (str(uid) in config["userapi"]["admins"])
 
 def recovery(discord_id):
-    user=config["discords"][str(discord_id)]
+    user=db["discords"][str(discord_id)]
     return serverManager.password_reset(user)
 
 def getMentionedUsers(ctx):
@@ -52,6 +65,7 @@ bot = commands.Bot(command_prefix='/')
 
 # Other
 config = getConfig()
+db = getDb()
 serverManager = MortalManager.from_save(config)
 
 # --------------- Bot commands ---------------
@@ -69,7 +83,7 @@ async def register(ctx):
 async def registerCoro(ctx):
     for user in getMentionedUsers(ctx):
         # check if user already exists
-        if(str(user.id) in config["discords"]):
+        if(str(user.id) in db["discords"]):
             await ctx.send(f"Ten użytkownik ma już konto: {config['discords'][str(user.id)]}")
             continue
 
@@ -81,10 +95,10 @@ async def registerCoro(ctx):
             pass    # TODO: Add exception handling
 
         if(out):
-            # Update config
-            config["mortals"] = list(serverManager.mortals)
-            config["discords"][str(user.id)] = out
-            saveConfig()
+            # Update db
+            db["mortals"] = list(serverManager.mortals)
+            db["discords"][str(user.id)] = out
+            saveDb()
 
             # Message success
             await ctx.send(f"Utworzono użytkownika: {out}")
@@ -108,12 +122,12 @@ async def killCoro(ctx):
     # Remove by discord username
     for user in ctx.message.mentions:
         try:
-            serverManager.remove_mortal(config["discords"][str(user.id)])
+            serverManager.remove_mortal(db["discords"][str(user.id)])
 
             # Update config
-            config["mortals"] = list(serverManager.mortals)
-            config["discords"].pop(str(user.id),None)
-            saveConfig()
+            db["mortals"] = list(serverManager.mortals)
+            db["discords"].pop(str(user.id),None)
+            saveDb()
 
             # Message success
             await ctx.send(f"Usunięto konto: {user.display_name}")
@@ -126,13 +140,13 @@ async def killCoro(ctx):
             if("@" not in user):
                 serverManager.remove_mortal(user)
 
-                # Update config
-                config["mortals"] = list(serverManager.mortals)
-                for i in config["discords"]:
-                    if(config["discords"][i]==user):
-                        config["discords"].pop(i)
+                # Update db
+                db["mortals"] = list(serverManager.mortals)
+                for i in db["discords"]:
+                    if(db["discords"][i]==user):
+                        db["discords"].pop(i)
                         break
-                saveConfig()
+                saveDb()
 
                 # Message success
                 await ctx.send(f"Usunięto konto: {user}")
@@ -149,7 +163,7 @@ async def password(ctx):
 async def passwordCoro(ctx):
     try:
         newdata = recovery(ctx.author.id)
-        await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {config['discords'][str(ctx.author.id)]}")
+        await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
         await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except:
         await ctx.send("Nie udało się zresetować hasła")
@@ -169,7 +183,7 @@ async def whoisCoro(ctx):
     # check by discord username
     for user in ctx.message.mentions:
         try:
-            nick = config["discords"][str(user.id)]
+            nick = db["discords"][str(user.id)]
             await ctx.send(nick)
         except:
             await ctx.send("Ten użytkownik nie posiada konta na serwerze.")
@@ -178,8 +192,8 @@ async def whoisCoro(ctx):
     for user in ctx.message.content.split()[1:]:
         if "@" not in user:
             found = False
-            for i in config["discords"]:
-                if config["discords"][i]==user:
+            for i in db["discords"]:
+                if db["discords"][i]==user:
                     res = await bot.fetch_user(int(i))
                     await ctx.send(res.display_name)
                     found=True
