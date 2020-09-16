@@ -183,11 +183,11 @@ class MortalManager:
 
     #config methods
     @staticmethod
-    def from_save(config):
+    def from_save(config, db):
         dbapi = MariaDBApi(config["dbapi"]['host'], config["dbapi"]['sock'])
         userapi = UserAPI(config["userapi"]["base_dir"], config["userapi"]["user_group"], config["userapi"]["samplequota"])
 
-        return MortalManager(userapi, mortals=config['mortals'], dbapi=dbapi)
+        return MortalManager(userapi, mortals=db['mortals'], dbapi=dbapi)
 
     def dump_save(self):
         config = {

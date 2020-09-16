@@ -66,7 +66,7 @@ bot = commands.Bot(command_prefix='/')
 # Other
 config = getConfig()
 db = getDb()
-serverManager = MortalManager.from_save(config)
+serverManager = MortalManager.from_save(config, db)
 
 # --------------- Bot commands ---------------
 
