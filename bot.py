@@ -222,8 +222,8 @@ async def whoisCoro(ctx):
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
-@bot.on_command_error()
-async def ErrorHandler(ctx,error):
+@bot.event
+async def on_command_error(ctx,error):
     await ctx.message.add_reaction('❌')
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("Możesz ponownie użyć tej komendy za {:.2f}s".format(error.retry_after))
