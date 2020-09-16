@@ -78,6 +78,7 @@ async def register(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
+    logging.info("register called")
     await mainQueue.addJob(registerCoro(ctx))
 
 async def registerCoro(ctx):
@@ -118,6 +119,7 @@ async def kill(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
+    logging.info("kill called")
     await mainQueue.addJob(killCoro(ctx))
 
 async def killCoro(ctx):
@@ -182,7 +184,8 @@ async def whois(ctx):
     if not isGod(ctx.author.id):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
-    
+    logging.info("whois called")
+
     await ctx.add_reaction('⌛')
     await secondQueue.addJob(whoisCoro(ctx))
 
