@@ -191,11 +191,9 @@ async def whois(ctx):
     await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):
-    logging.info("Whois starting")
     # check by discord username
     for user in ctx.message.mentions:
         try:
-            logging.info(f"Whois for {str(user.id)}")
             nick = db["discords"][str(user.id)]
             await ctx.send(nick)
         except:
@@ -213,8 +211,6 @@ async def whoisCoro(ctx):
                     break
             if not found:
                 await ctx.send("Ten użytkownik nie istnieje.")
-    
-    logging.info("Whois ended")
 
 def main():
     # Run queues and bot

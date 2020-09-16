@@ -19,9 +19,9 @@ class Tasker:
             coro = await self._queue.get()
             logging.info(f"Executing coroutine: {coro}")
             try:
-                asyncio.run(coro)
+                await coro
             except Exception as e:
-                print(f"{self} Error: {e}")
+                logging.exception(f"{self} Error: {e}")
 
     async def start(self):
         """ Return infinite task to run with other tasks in program """
