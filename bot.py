@@ -187,11 +187,14 @@ async def whoisCoro(ctx):
             if not found:
                 await ctx.send("Ten użytkownik nie istnieje.")
 
-# Run queues and bot
-asyncio.run(asyncio.gather(
-    mainQueue.start(),
-    secondQueue.start(),
-    bot.start(TOKEN),
-))
+async def main():
+    # Run queues and bot
+    await asyncio.gather(
+        mainQueue.start(),
+        secondQueue.start(),
+        bot.start(TOKEN),
+    )
+
+asyncio.run(main())
 
 logging.warning("Execution ended (that shouldn't be possible)")
