@@ -187,7 +187,11 @@ async def whois(ctx):
         return
 
     logging.info("whois called")
-    #await ctx.add_reaction('⌛')
+    try:
+        await ctx.add_reaction('⌛')
+    except Exception as e:
+        logging.exception(f"Emoji error: {e}")
+        
     await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):
