@@ -184,9 +184,9 @@ async def whois(ctx):
     if not isGod(ctx.author.id):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
+        
     logging.info("whois called")
-
-    await ctx.add_reaction('⌛')
+    #await ctx.add_reaction('⌛')
     await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):

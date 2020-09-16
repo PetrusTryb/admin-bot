@@ -17,6 +17,7 @@ class Tasker:
         self._queue = asyncio.Queue()
         while 1:
             coro = await self._queue.get()
+            logging.info(f"Executing coroutine: {coro}")
             try:
                 asyncio.run(coro)
             except Exception as e:
