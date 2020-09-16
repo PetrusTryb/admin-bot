@@ -79,7 +79,7 @@ async def register(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
-    logging.info("register called")
+    await ctx.message.add_reaction('⌛')
     await mainQueue.addJob(registerCoro(ctx))
 
 async def registerCoro(ctx):
@@ -120,7 +120,7 @@ async def kill(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
-    logging.info("kill called")
+    await ctx.message.add_reaction('⌛')
     await mainQueue.addJob(killCoro(ctx))
 
 async def killCoro(ctx):
@@ -165,6 +165,7 @@ async def killCoro(ctx):
 @bot.command(help="Zmienia hasło użytkownika")
 async def password(ctx):
     """ Reset caller's password """
+    await ctx.message.add_reaction('⌛')
     await mainQueue.addJob(passwordCoro(ctx))
 
 async def passwordCoro(ctx):
@@ -186,12 +187,7 @@ async def whois(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
-    logging.info("whois called")
-    try:
-        await ctx.message.add_reaction('⌛')
-    except Exception as e:
-        logging.exception(f"Emoji error: {e}")
-
+    await ctx.message.add_reaction('⌛')
     await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):
@@ -215,6 +211,8 @@ async def whoisCoro(ctx):
                     break
             if not found:
                 await ctx.send("Ten użytkownik nie istnieje.")
+
+    await ctx.message.remove_reaction('⌛', bot.user)
 
 def main():
     # Run queues and bot
