@@ -1,8 +1,8 @@
 import asyncio
+import logging
 
 class Tasker:
     def __init__(self):
-        self._queue = asyncio.Queue()
         self.running = False    
 
     async def addJob(self, coro):
@@ -11,8 +11,10 @@ class Tasker:
             raise ValueError("a coroutine was expected, got {!r}".format(coro))
         
         await self._queue.put(coro)
+        logging.info(f"Added new coroutine {coro}")
     
     async def _loop(self):
+        self._queue = asyncio.Queue()
         while 1:
             coro = await self._queue.get()
             try:
