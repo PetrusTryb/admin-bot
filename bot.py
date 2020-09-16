@@ -105,11 +105,14 @@ async def registerCoro(ctx):
 
             # Message success
             logging.info(f"Created user: {out}")
+            await ctx.message.add_reaction('📬')
             await ctx.send(f"Utworzono użytkownika: {out}")   
             newdata = recovery(user.id)
             await user.send(f"Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nHasło do bazy danych: `{newdata[1]}`")
         else:
             await ctx.send(f"Nie można utworzyć konta dla: {user}")
+    
+    await ctx.message.remove_reaction('⌛', bot.user)
 
 
 @commands.cooldown(1,10)
@@ -159,6 +162,8 @@ async def killCoro(ctx):
                 await ctx.send(f"Usunięto konto: {user}")
         except:
             await ctx.send("Nie można usunąć konta")
+    
+    await ctx.message.remove_reaction('⌛', bot.user)
 
 
 @commands.cooldown(1,10)
@@ -173,10 +178,13 @@ async def passwordCoro(ctx):
         newdata = recovery(ctx.author.id)
 
         logging.info(f"Resetted password: {db['discords'][str(ctx.author.id)]}")
+        await ctx.message.add_reaction('📬')
         await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
         await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except:
         await ctx.send("Nie udało się zresetować hasła")
+
+    await ctx.message.remove_reaction('⌛', bot.user)
 
 
 @commands.cooldown(1,10)
