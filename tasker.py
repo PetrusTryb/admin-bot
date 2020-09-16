@@ -23,7 +23,7 @@ class Tasker:
                 print(f"{self} Error: {e}")
 
     async def start(self):
-        """ Return infinite task to asyncio.gather with other tasks in program """
+        """ Return infinite task to run with other tasks in program """
         if self.running:
             return None # TODO: Add already running exception
         

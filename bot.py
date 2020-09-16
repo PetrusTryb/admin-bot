@@ -74,7 +74,7 @@ serverManager = MortalManager.from_save(config, db)
 @bot.command(help="Tworzy nowe konto użytkownika")
 async def register(ctx):
     """ Create account """
-    if(not isGod(ctx.author.id)):
+    if not isGod(ctx.author.id):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
@@ -83,25 +83,27 @@ async def register(ctx):
 async def registerCoro(ctx):
     for user in getMentionedUsers(ctx):
         # check if user already exists
-        if(str(user.id) in db["discords"]):
+        if str(user.id) in db["discords"]:
             await ctx.send(f"Ten użytkownik ma już konto: {config['discords'][str(user.id)]}")
             continue
 
         out = None
         try:
             out = serverManager.create_mortal()
-        except:
+        except Exception as e:
+            logging.exception(f"Exception while creating user: {e}")
             out = None
             pass    # TODO: Add exception handling
 
-        if(out):
+        if out:
             # Update db
             db["mortals"] = list(serverManager.mortals)
             db["discords"][str(user.id)] = out
             saveDb()
 
             # Message success
-            await ctx.send(f"Utworzono użytkownika: {out}")
+            logging.info(f"Created user: {out}")
+            await ctx.send(f"Utworzono użytkownika: {out}")   
             newdata = recovery(user.id)
             await user.send(f"Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nHasło do bazy danych: `{newdata[1]}`")
         else:
@@ -112,7 +114,7 @@ async def registerCoro(ctx):
 @bot.command(help="Usuwa konto użytkownika wraz ze wszystkimi danymi")
 async def kill(ctx):
     """ Remove account """
-    if(not isGod(ctx.author.id)):
+    if not isGod(ctx.author.id):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
@@ -130,6 +132,7 @@ async def killCoro(ctx):
             saveDb()
 
             # Message success
+            logging.info(f"Deleted user: {user.display_name}")
             await ctx.send(f"Usunięto konto: {user.display_name}")
         except:
             await ctx.send("Nie można usunąć konta")
@@ -137,18 +140,19 @@ async def killCoro(ctx):
     # Remove by server username (s1, s2, etc..)
     for user in ctx.message.content.split()[1:]:
         try:
-            if("@" not in user):
+            if "@" not in user:
                 serverManager.remove_mortal(user)
 
                 # Update db
                 db["mortals"] = list(serverManager.mortals)
                 for i in db["discords"]:
-                    if(db["discords"][i]==user):
+                    if db["discords"][i]==user:
                         db["discords"].pop(i)
                         break
                 saveDb()
 
                 # Message success
+                logging.info(f"Removed user: {user}")
                 await ctx.send(f"Usunięto konto: {user}")
         except:
             await ctx.send("Nie można usunąć konta")
@@ -163,6 +167,8 @@ async def password(ctx):
 async def passwordCoro(ctx):
     try:
         newdata = recovery(ctx.author.id)
+
+        logging.info(f"Resetted password: {db['discords'][str(ctx.author.id)]}")
         await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
         await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except:
@@ -173,7 +179,7 @@ async def passwordCoro(ctx):
 @bot.command(help="Sprawdza, które konta są powiązane z danymi użytkownikami")
 async def whois(ctx):
     """ Identify discord user by server username and vice versa """
-    if(not isGod(ctx.author.id)):
+    if not isGod(ctx.author.id):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
