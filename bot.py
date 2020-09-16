@@ -222,6 +222,14 @@ async def whoisCoro(ctx):
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
+@bot.on_command_error()
+async def ErrorHandler(ctx,error):
+    await ctx.message.add_reaction('❌')
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("Możesz ponownie użyć tej komendy za {:.2f}s".format(error.retry_after))
+    else:
+        await ctx.send("Wystąpił problem, proszę skontaktuj się z administracją.")
+
 def main():
     # Run queues and bot
     asyncio.get_event_loop().run_until_complete(mainQueue.start())
