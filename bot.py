@@ -183,6 +183,7 @@ async def whois(ctx):
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
+    await ctx.add_reaction('⌛')
     await secondQueue.addJob(whoisCoro(ctx))
 
 async def whoisCoro(ctx):
