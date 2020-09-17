@@ -76,6 +76,7 @@ serverManager = MortalManager.from_save(config, db)
 async def register(ctx):
     """ Create account """
     if not isGod(ctx.author.id):
+        await ctx.message.add_reaction('🛑')
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
     
@@ -86,6 +87,7 @@ async def registerCoro(ctx):
     for user in getMentionedUsers(ctx):
         # check if user already exists
         if str(user.id) in db["discords"]:
+            await ctx.message.add_reaction('⚠')
             await ctx.send(f"Ten użytkownik ma już konto: {config['discords'][str(user.id)]}")
             continue
 
@@ -108,8 +110,9 @@ async def registerCoro(ctx):
             await ctx.message.add_reaction('📬')
             await ctx.send(f"Utworzono użytkownika: {out}")   
             newdata = recovery(user.id)
-            await user.send(f"Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nHasło do bazy danych: `{newdata[1]}`")
+            await user.send(f"Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: ```{out}```\nHasło do przesyłania plików: ```{newdata[0]}```\nNazwa bazy danych: ```db{out}```\nHasło do bazy danych: ```{newdata[1]}```")
         else:
+            await ctx.message.add_reaction('❌')
             await ctx.send(f"Nie można utworzyć konta dla: {user}")
     
     await ctx.message.remove_reaction('⌛', bot.user)
@@ -120,6 +123,7 @@ async def registerCoro(ctx):
 async def kill(ctx):
     """ Remove account """
     if not isGod(ctx.author.id):
+        await ctx.message.add_reaction('🛑')
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
@@ -141,6 +145,7 @@ async def killCoro(ctx):
             logging.info(f"Deleted user: {user.display_name}")
             await ctx.send(f"Usunięto konto: {user.display_name}")
         except:
+            await ctx.message.add_reaction('❌')
             await ctx.send("Nie można usunąć konta")
 
     # Remove by server username (s1, s2, etc..)
@@ -161,6 +166,7 @@ async def killCoro(ctx):
                 logging.info(f"Removed user: {user}")
                 await ctx.send(f"Usunięto konto: {user}")
         except:
+            await ctx.message.add_reaction('❌')
             await ctx.send("Nie można usunąć konta")
     
     await ctx.message.remove_reaction('⌛', bot.user)
@@ -182,6 +188,7 @@ async def passwordCoro(ctx):
         await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
         await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except:
+        await ctx.message.add_reaction('❌')
         await ctx.send("Nie udało się zresetować hasła")
 
     await ctx.message.remove_reaction('⌛', bot.user)
@@ -192,6 +199,7 @@ async def passwordCoro(ctx):
 async def whois(ctx):
     """ Identify discord user by server username and vice versa """
     if not isGod(ctx.author.id):
+        await ctx.message.add_reaction('🛑')
         await ctx.send("Nie dla psa! Dla Adminów to!")
         return
 
@@ -205,7 +213,8 @@ async def whoisCoro(ctx):
             nick = db["discords"][str(user.id)]
             await ctx.send(nick)
         except:
-            await ctx.send("Ten użytkownik nie posiada konta na serwerze.")
+            await ctx.message.add_reaction('❌')
+            await ctx.send(f"Użytkownik {user.display_name} nie posiada konta na serwerze.")
 
     # Check by server username (s1, s2, etc..)
     for user in ctx.message.content.split()[1:]:
@@ -218,7 +227,8 @@ async def whoisCoro(ctx):
                     found=True
                     break
             if not found:
-                await ctx.send("Ten użytkownik nie istnieje.")
+                await ctx.message.add_reaction('❌')
+                await ctx.send(f"Użytkownik {user.display_name} nie istnieje.")
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
@@ -227,6 +237,8 @@ async def on_command_error(ctx,error):
     await ctx.message.add_reaction('❌')
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("Możesz ponownie użyć tej komendy za {:.2f}s".format(error.retry_after))
+    elif isinstance(error, commands.CommandNotFound):
+        await ctx.send("Nieprawidłowe polecenie. Wpisz `/help`, aby uzyskać listę dostępnych poleceń.")
     else:
         await ctx.send("Wystąpił problem, proszę skontaktuj się z administracją.")
 
