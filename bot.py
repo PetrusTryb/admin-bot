@@ -146,7 +146,7 @@ async def killCoro(ctx):
             await ctx.send(f"Usunięto konto: {user.display_name}")
         except:
             await ctx.message.add_reaction('⚠')
-            await ctx.send("Nie można usunąć konta")
+            await ctx.send(f"Nie udało się usunąć konta użytkownika {user.display_name}")
 
     # Remove by server username (s1, s2, etc..)
     for user in ctx.message.content.split()[1:]:
@@ -167,7 +167,7 @@ async def killCoro(ctx):
                 await ctx.send(f"Usunięto konto: {user}")
         except:
             await ctx.message.add_reaction('⚠')
-            await ctx.send("Nie można usunąć konta")
+            await ctx.send(f"Nie udało się usunąć konta {user}")
     
     await ctx.message.remove_reaction('⌛', bot.user)
 
@@ -189,7 +189,7 @@ async def passwordCoro(ctx):
         await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except:
         await ctx.message.add_reaction('❌')
-        await ctx.send("Nie udało się zresetować hasła")
+        await ctx.send("Nie udało się zresetować hasła. Prawdopodobnie nie masz jeszcze konta na serwerze Tryton.")
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
@@ -245,7 +245,7 @@ async def whoamiCoro(ctx):
     user=ctx.author
     try:
         nick = db["discords"][str(user.id)]
-        await ctx.send(nick)
+        await ctx.send(f"Twój login to `{nick}`\nNazwa Twojej bazy danych to `db{nick}`\nJeśli nie pamiętasz swoich haseł, wpisz `/password`.")
     except:
         await ctx.message.add_reaction('❌')
         await ctx.send(f"Nie utworzono dla Ciebie żadnego konta. Jeśli chcesz posiadać konto, skontaktuj się z administracją.")
@@ -256,7 +256,7 @@ async def whoamiCoro(ctx):
 async def on_command_error(ctx,error):
     await ctx.message.add_reaction('❌')
     if isinstance(error, commands.CommandOnCooldown):
-        await ctx.send("Możesz ponownie użyć tej komendy za {:.2f}s".format(error.retry_after))
+        await ctx.send("Nie spamuj! Możesz ponownie użyć tej komendy dopiero za {:.2f}s".format(error.retry_after))
     elif isinstance(error, commands.CommandNotFound):
         await ctx.send("Nieprawidłowe polecenie. Wpisz `/help`, aby uzyskać listę dostępnych poleceń.")
     else:
