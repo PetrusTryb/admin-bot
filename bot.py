@@ -228,7 +228,7 @@ async def whoisCoro(ctx):
                     break
             if not found:
                 await ctx.message.add_reaction('❌')
-                await ctx.send(f"Użytkownik {res.display_name} nie istnieje.")
+                await ctx.send(f"Użytkownik {user} nie istnieje.")
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
