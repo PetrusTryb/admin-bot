@@ -232,6 +232,26 @@ async def whoisCoro(ctx):
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
+@commands.cooldown(1,10)
+@bot.command(help="Sprawdza, które konto należy do Ciebie")
+async def whoami(ctx):
+    """ Check which account is owned by user """
+
+    await ctx.message.add_reaction('⌛')
+    await secondQueue.addJob(whoamiCoro(ctx))
+
+async def whoamiCoro(ctx):
+    # check by author id
+    user=ctx.author
+    try:
+        nick = db["discords"][str(user.id)]
+        await ctx.send(nick)
+    except:
+        await ctx.message.add_reaction('❌')
+        await ctx.send(f"Nie utworzono dla Ciebie żadnego konta. Jeśli chcesz posiadać konto, skontaktuj się z administracją.")
+
+    await ctx.message.remove_reaction('⌛', bot.user)
+
 @bot.event
 async def on_command_error(ctx,error):
     await ctx.message.add_reaction('❌')
