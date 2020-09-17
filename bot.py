@@ -239,4 +239,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-logging.warning("Execution ended (that shouldn't be possible)")
+    logging.warning("Execution ended (that shouldn't be possible)")
