@@ -88,7 +88,7 @@ async def registerCoro(ctx):
         # check if user already exists
         if str(user.id) in db["discords"]:
             await ctx.message.add_reaction('⚠')
-            await ctx.send(f"Ten użytkownik ma już konto: {config['discords'][str(user.id)]}")
+            await ctx.send(f"Ten użytkownik ma już konto: {db['discords'][str(user.id)]}")
             continue
 
         out = None
@@ -112,7 +112,7 @@ async def registerCoro(ctx):
             newdata = recovery(user.id)
             await user.send(f"Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: ```{out}```\nHasło do przesyłania plików: ```{newdata[0]}```\nNazwa bazy danych: ```db{out}```\nHasło do bazy danych: ```{newdata[1]}```")
         else:
-            await ctx.message.add_reaction('❌')
+            await ctx.message.add_reaction('⚠')
             await ctx.send(f"Nie można utworzyć konta dla: {user}")
     
     await ctx.message.remove_reaction('⌛', bot.user)
@@ -145,7 +145,7 @@ async def killCoro(ctx):
             logging.info(f"Deleted user: {user.display_name}")
             await ctx.send(f"Usunięto konto: {user.display_name}")
         except:
-            await ctx.message.add_reaction('❌')
+            await ctx.message.add_reaction('⚠')
             await ctx.send("Nie można usunąć konta")
 
     # Remove by server username (s1, s2, etc..)
@@ -166,7 +166,7 @@ async def killCoro(ctx):
                 logging.info(f"Removed user: {user}")
                 await ctx.send(f"Usunięto konto: {user}")
         except:
-            await ctx.message.add_reaction('❌')
+            await ctx.message.add_reaction('⚠')
             await ctx.send("Nie można usunąć konta")
     
     await ctx.message.remove_reaction('⌛', bot.user)
@@ -213,7 +213,7 @@ async def whoisCoro(ctx):
             nick = db["discords"][str(user.id)]
             await ctx.send(nick)
         except:
-            await ctx.message.add_reaction('❌')
+            await ctx.message.add_reaction('⚠')
             await ctx.send(f"Użytkownik {user.display_name} nie posiada konta na serwerze.")
 
     # Check by server username (s1, s2, etc..)
@@ -227,7 +227,7 @@ async def whoisCoro(ctx):
                     found=True
                     break
             if not found:
-                await ctx.message.add_reaction('❌')
+                await ctx.message.add_reaction('⚠')
                 await ctx.send(f"Użytkownik {user} nie istnieje.")
 
     await ctx.message.remove_reaction('⌛', bot.user)
