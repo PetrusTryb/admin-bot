@@ -136,6 +136,7 @@ class MortalManager:
 
         self.name_digits = name_digits
         self.phpapi = phpapi
+        self.phpapi.restart()
         self.userapi = userapi
         logging.info("Created Mortal Manager.")
 
