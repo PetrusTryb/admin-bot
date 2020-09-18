@@ -99,12 +99,31 @@ class MariaDBApi:
         finally:
             conn.close()
 
+class PHPPoolApi:
+    def __init__(self, confdir, template, service):
+        self.confdir = confdir
+        self.template = template
+        self.service = service
+
+    def create_user(self, name):
+        confpath = os.path.join(self.confdir, "%s.conf" % name)
+        with open(confpath, "w") as conffile:
+            conffile.write(self.template.format(name))
+
+    def remove_user(self, name):
+        confpath = os.path.join(self.confdir, "%s.conf" % name)
+        os.remove(confpath)
+
+    def restart(self):
+        subprocess.run(['systemctl', 'restart', self.service], check=True)
+
+
 class UnsafeNameError(Exception):
     def __init__(self, name):
         self.name = name
 
 class MortalManager:
-    def __init__(self, userapi, mortals=None, dbapi=None, name_digits=3):
+    def __init__(self, userapi, phpapi, mortals=None, dbapi=None, name_digits=3):
         if mortals:
             self.mortals = set(mortals)
         else:
@@ -116,6 +135,7 @@ class MortalManager:
             self.dbapi = MariaDBApi()
 
         self.name_digits = name_digits
+        self.phpapi = phpapi
         self.userapi = userapi
         logging.info("Created Mortal Manager.")
 
@@ -143,6 +163,8 @@ class MortalManager:
         try:
             self.userapi.create_user(name)
             self.dbapi.create_user(name)
+            self.phpapi.create_user(name)
+            self.phpapi.restart()
         except Exception as e:
             logging.error("Mortal creation error: "+str(e))
             self.remove_mortal(name)
@@ -186,8 +208,9 @@ class MortalManager:
     def from_save(config, db):
         dbapi = MariaDBApi(config["dbapi"]['host'], config["dbapi"]['sock'])
         userapi = UserAPI(config["userapi"]["base_dir"], config["userapi"]["user_group"], config["userapi"]["samplequota"])
+        phpapi = PHPPoolApi(config["phpapi"]["conf_dir"], config["phpapi"]["template"], config["phpapi"]["service"])
 
-        return MortalManager(userapi, mortals=db['mortals'], dbapi=dbapi)
+        return MortalManager(userapi, phpapi, mortals=db['mortals'], dbapi=dbapi)
 
     def dump_save(self):
         config = {
@@ -203,46 +226,3 @@ class MortalManager:
             }
         }
         return config
-
-
-
-#TESTING
-import argparse
-import sys
-import json
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Manages mortals')
-    parser.add_argument('--conf', default='conf.json')
-    subparsers = parser.add_subparsers()
-
-    parser_create = subparsers.add_parser('create', help='creates user')
-    parser_create.set_defaults(op='create')
-
-    parser_remove = subparsers.add_parser('remove', help='removes user')
-    parser_remove.add_argument('names', action="extend", nargs="+", type=str)
-    parser_remove.set_defaults(op='remove')
-
-    parser_chpass = subparsers.add_parser('chpass', help='changes password')
-    parser_chpass.add_argument('names', action="extend", nargs="+", type=str)
-    parser_chpass.set_defaults(op='chpass')
-
-    args = parser.parse_args(sys.argv[1:])
-    print(args)
-    if os.path.isfile(args.conf):
-        with open(args.conf, 'r') as conffile:
-            mm = MortalManager.from_save(json.load(conffile))
-    else:
-        mm = MortalManager(UserAPI('/smietnik', 'smiertelnicy', 'samplequota'))
-    
-    if args.op == 'create':
-        print(mm.create_mortal())
-    elif args.op == 'remove':
-        for name in args.names:
-            mm.remove_mortal(name)
-    elif args.op == 'chpass':
-        for name in args.names:
-            print(mm.password_reset(name))
-
-    with open(args.conf, 'w') as conffile:
-        json.dump(mm.dump_save(), conffile)

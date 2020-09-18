@@ -1,1 +1,14 @@
-{"dbapi": {"sock": "/var/run/mysqld/mysqld.sock", "host": "127.0.0.1"}, "userapi": {"base_dir": "/smietnik", "user_group": "smiertelnicy", "samplequota": "samplequota", "admins": ["621605375040552962", "331576888508284938", "423569902717370378", "506165151121145888", "689035469044187167"]}}
+{
+    "phpapi": {
+        "service": "php7.4-fpm.service",
+        "conf_dir": "/etc/php/7.4/fpm/mortal.d/",
+        "template": "[{0}]\nuser = $pool\ngroup = www-data\nlisten = /run/php/mortal/$pool.sock\nlisten.owner = www-data\nlisten.group = www-data\nprocess.priority = 0\npm = ondemand\npm.max_children = 1\nchroot = /smietnik/$pool/content/\nchdir = /"
+    }, 
+    "dbapi": {
+        "sock": "/var/run/mysqld/mysqld.sock", "host": "127.0.0.1"
+    }, 
+    "userapi": {
+        "base_dir": "/smietnik", "user_group": "smiertelnicy", "samplequota": "samplequota", "admins": [
+            "621605375040552962", "331576888508284938", "423569902717370378", "506165151121145888", "689035469044187167"]
+    }
+}
