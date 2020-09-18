@@ -189,6 +189,10 @@ class MortalManager:
             self.dbapi.remove_user(name)
         except:
             pass
+        try:
+            self.phpapi.remove_user(name)
+        except:
+            pass
 
     def password_reset(self, name):
         if not self.is_name_safe(name):
