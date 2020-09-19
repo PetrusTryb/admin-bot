@@ -273,10 +273,9 @@ async def usersCoro(ctx):
         em.add_field(name=" ",value=res.display_name)
         em.add_field(name=" ",value=db["discords"][i])
         if(isGod(int(i))):
-            em.add_field(name=" ",value="👑 admin")
+            em.add_field(name=" ",value="admin")
         else:
-            em.add_field(name=" ",value="👨 user")
-    await ctx.send("message")
+            em.add_field(name=" ",value="user")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
