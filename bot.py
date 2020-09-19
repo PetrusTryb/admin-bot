@@ -264,7 +264,18 @@ async def users(ctx):
     await secondQueue.addJob(usersCoro(ctx))
 
 async def usersCoro(ctx):
-    em=discord.Embed(title="Wykaz użytkowników",description="<table><tr><th><strong>Discord</strong></th><th><strong>Typkonta</strong></th><th><strong>Login</strong></th></tr><tr><td>abc</td><td><span>admin</span></td><td>s1</td></tr><tr><td>def</td><td></td><td>s2</td></tr><tr><td>ghi</td><td></td><td>s3</td></tr><tr><td>jkl</td><td><span>admin</span></td><td>s4</td></tr><tr><td>mno</td><td><span>admin</span></td><td>s5</td></tr><tr><td>pqr</td><td></td><td>s6</td></tr></table>")
+    em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy użytkownicy aktualnie zarejestrowani na serwerze Tryton:")
+    em.add_field("Discord","")
+    em.add_field("Login Tryton","")
+    em.add_field("Uprawnienia","")
+    for i in db["discords"]:
+        res = await bot.fetch_user(int(i))
+        em.add_field("",res.display_name)
+        em.add_field("",db["discords"])
+        if(isGod(int(i))):
+            em.add_field("","👑 administrator")
+        else:
+            em.add_field("","👨 użytkownik")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
