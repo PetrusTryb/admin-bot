@@ -245,7 +245,12 @@ async def whoamiCoro(ctx):
     user=ctx.author
     try:
         nick = db["discords"][str(user.id)]
-        await ctx.send(f"Twój login to `{nick}`\nTwoja strona jest dostępna pod adresem: https://tryton.vlo.gda.pl/u/{nick}\nNazwa Twojej bazy danych to `db{nick}`\nJeśli nie pamiętasz swoich haseł, wpisz `/password`.")
+        perm="👑 Admin" if isGod(user.id) else "👨 Użytkownik"
+        embed=discord.Embed(title=ctx.author.display_name, url=f"https://tryton.vlo.gda.pl/u/{nick}", description=perm)
+        embed.add_field(name="Login na serwerze:", value=nick, inline=False)
+        embed.add_field(name="Baza danych:", value=f"db{nick}", inline=False)
+        embed.set_footer(text="Jeśli zapomniałeś swoich haseł, wpisz `/password`")
+        await ctx.send(embed=embed)
     except:
         await ctx.message.add_reaction('❌')
         await ctx.send(f"Nie utworzono dla Ciebie żadnego konta. Jeśli chcesz posiadać konto, skontaktuj się z administracją.")
@@ -269,7 +274,7 @@ async def usersCoro(ctx):
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
         login=db["discords"][str(i)]
-        em.add_field(name=res.display_name,value=login,inline=False)
+        em.add_field(name=res.display_name,value=f"https://tryton.vlo.gda.pl/u/{login}",inline=False)
         fields+=1
         if(fields>=24):
             await ctx.send(embed=em)
