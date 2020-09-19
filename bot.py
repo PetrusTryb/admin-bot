@@ -266,13 +266,19 @@ async def users(ctx):
 async def usersCoro(ctx):
     em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy zarejestrowani na serwerze Tryton:")
     em.add_field(name="Osoba",value="Uprawnienia")
-    em.add_field(name="Login Tryton")
+    em.add_field(name="Login Tryton",value="Link")
+    fields=2
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
+        login=db["discords"][str(i)]
         perm="admin" if isGod(int(i)) else "user"
-        #em.add_field(name=res.display_name,value=perm)
-        #em.add_field(name=db["discords"][str(i)],value=" ")
-    await ctx.send("test")
+        em.add_field(name=res.display_name,value=perm,inline=False)
+        em.add_field(name=login,value=f"https://tryton.vlo.gda.pl/u/{login}")
+        fields+=2
+        if(fields>=24):
+            await ctx.send(embed=em)
+            em=discord.Embed()
+            fields=0
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
