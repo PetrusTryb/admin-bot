@@ -264,7 +264,8 @@ async def users(ctx):
     await secondQueue.addJob(usersCoro(ctx))
 
 async def usersCoro(ctx):
-    em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy użytkownicy aktualnie zarejestrowani na serwerze Tryton:")
+    em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy zarejestrowani na serwerze Tryton:")
+    await ctx.send("xyzddd")
     em.add_field("Discord","x")
     em.add_field("Tryton","y")
     em.add_field("Uprawnienia","z")
