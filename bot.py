@@ -269,7 +269,7 @@ async def usersCoro(ctx):
     em.add_field("Login Tryton","y")
     em.add_field("Uprawnienia","z")
     for i in db["discords"]:
-        await ctx.send(i)
+        await ctx.send(str(i))
         res = await bot.fetch_user(int(i))
         em.add_field(" ",res.display_name)
         em.add_field(" ",db["discords"][i])
