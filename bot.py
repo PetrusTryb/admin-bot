@@ -269,13 +269,15 @@ async def usersCoro(ctx):
     em.add_field("Login Tryton"," ")
     em.add_field("Uprawnienia"," ")
     for i in db["discords"]:
+        await ctx.send(i)
         res = await bot.fetch_user(int(i))
         em.add_field(" ",res.display_name)
         em.add_field(" ",db["discords"][i])
+        await ctx.send(i)
         if(isGod(int(i))):
-            em.add_field(" ","👑 administrator")
+            em.add_field(" ","administrator")
         else:
-            em.add_field(" ","👨 użytkownik")
+            em.add_field(" ","użytkownik")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
