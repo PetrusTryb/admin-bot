@@ -245,7 +245,7 @@ async def whoamiCoro(ctx):
     user=ctx.author
     try:
         nick = db["discords"][str(user.id)]
-        await ctx.send(f"Twój login to `{nick}`\nTwoja strona jest dostępna pod adresem: https://tryton.vlo.gda.pl/u/${nick}\nNazwa Twojej bazy danych to `db{nick}`\nJeśli nie pamiętasz swoich haseł, wpisz `/password`.")
+        await ctx.send(f"Twój login to `{nick}`\nTwoja strona jest dostępna pod adresem: https://tryton.vlo.gda.pl/u/{nick}\nNazwa Twojej bazy danych to `db{nick}`\nJeśli nie pamiętasz swoich haseł, wpisz `/password`.")
     except:
         await ctx.message.add_reaction('❌')
         await ctx.send(f"Nie utworzono dla Ciebie żadnego konta. Jeśli chcesz posiadać konto, skontaktuj się z administracją.")
