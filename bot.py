@@ -266,7 +266,7 @@ async def users(ctx):
 async def usersCoro(ctx):
     em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy zarejestrowani na serwerze Tryton:")
     em.add_field(name="Osoba",value="Uprawnienia")
-    em.add_field(name="Login Tryton",value="Strona")
+    em.add_field(name="Login Tryton")
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
         perm="admin" if isGod(int(i)) else "user"
