@@ -270,8 +270,11 @@ async def usersCoro(ctx):
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
         perm="admin" if isGod(int(i)) else "user"
+        await ctx.send(res.display_name)
+        await ctx.send(db["discords"][str(i)])
         em.add_field(name=res.display_name,value=perm)
         em.add_field(name=db["discords"][str(i)],value=" ")
+    await ctx.send("test")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
