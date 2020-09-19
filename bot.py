@@ -110,7 +110,7 @@ async def registerCoro(ctx):
             await ctx.message.add_reaction('📬')
             await ctx.send(f"Utworzono użytkownika: {out}")   
             newdata = recovery(user.id)
-            await user.send(f"Utworzono dla Ciebie konto na serwerze Tryton!\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: ```{out}```\nHasło do przesyłania plików: ```{newdata[0]}```\nNazwa bazy danych: ```db{out}```\nHasło do bazy danych: ```{newdata[1]}```")
+            await user.send(f"**Utworzono dla Ciebie konto na serwerze Tryton!**\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nNazwa bazy danych: `db{out}`\nHasło do bazy danych: `{newdata[1]}`")
         else:
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Nie można utworzyć konta dla: {user}")
@@ -245,7 +245,7 @@ async def whoamiCoro(ctx):
     user=ctx.author
     try:
         nick = db["discords"][str(user.id)]
-        await ctx.send(f"Twój login to `{nick}`\nNazwa Twojej bazy danych to `db{nick}`\nJeśli nie pamiętasz swoich haseł, wpisz `/password`.")
+        await ctx.send(f"Twój login to `{nick}`\nTwoja strona jest dostępna pod adresem: https://tryton.vlo.gda.pl/u/${nick}\nNazwa Twojej bazy danych to `db{nick}`\nJeśli nie pamiętasz swoich haseł, wpisz `/password`.")
     except:
         await ctx.message.add_reaction('❌')
         await ctx.send(f"Nie utworzono dla Ciebie żadnego konta. Jeśli chcesz posiadać konto, skontaktuj się z administracją.")
@@ -256,7 +256,7 @@ async def whoamiCoro(ctx):
 async def on_command_error(ctx,error):
     await ctx.message.add_reaction('❌')
     if isinstance(error, commands.CommandOnCooldown):
-        await ctx.send("Nie spamuj! Możesz ponownie użyć tej komendy dopiero za {:.2f}s".format(error.retry_after))
+        await ctx.send("Nie spamuj! Możesz ponownie użyć tej komendy dopiero za {:.1f}s".format(error.retry_after))
     elif isinstance(error, commands.CommandNotFound):
         await ctx.send("Nieprawidłowe polecenie. Wpisz `/help`, aby uzyskać listę dostępnych poleceń.")
     else:
