@@ -211,7 +211,7 @@ async def whoisCoro(ctx):
     for user in ctx.message.mentions:
         try:
             nick = db["discords"][str(user.id)]
-            await ctx.send(nick)
+            await ctx.send(f"Użytkownik {user.display_name} posiada konto o nazwie {nick}.")
         except:
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Użytkownik {user.display_name} nie posiada konta na serwerze.")
@@ -223,7 +223,7 @@ async def whoisCoro(ctx):
             for i in db["discords"]:
                 if db["discords"][i]==user:
                     res = await bot.fetch_user(int(i))
-                    await ctx.send(res.display_name)
+                    await ctx.send(f"Właścicielem konta {user} jest {res.display_name}.")
                     found=True
                     break
             if not found:
@@ -264,7 +264,7 @@ async def users(ctx):
     await secondQueue.addJob(usersCoro(ctx))
 
 async def usersCoro(ctx):
-    em=discord.Embed(title="test",description="Your desc here")
+    em=discord.Embed(title="Wykaz użytkowników",description="<table><tr><th><strong>Discord</strong></th><th><strong>Typkonta</strong></th><th><strong>Login</strong></th></tr><tr><td>abc</td><td><span>admin</span></td><td>s1</td></tr><tr><td>def</td><td></td><td>s2</td></tr><tr><td>ghi</td><td></td><td>s3</td></tr><tr><td>jkl</td><td><span>admin</span></td><td>s4</td></tr><tr><td>mno</td><td><span>admin</span></td><td>s5</td></tr><tr><td>pqr</td><td></td><td>s6</td></tr></table>")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
