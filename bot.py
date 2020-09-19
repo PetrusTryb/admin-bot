@@ -265,16 +265,12 @@ async def users(ctx):
 
 async def usersCoro(ctx):
     em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy zarejestrowani na serwerze Tryton:")
-    em.add_field(name="Osoba",value="Uprawnienia")
-    em.add_field(name="Login Tryton",value="Baza danych")
-    fields=2
+    fields=0
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
         login=db["discords"][str(i)]
-        perm="admin" if isGod(int(i)) else "user"
-        em.add_field(name=res.display_name,value=perm,inline=False)
-        em.add_field(name=login,value=f"db{login}")
-        fields+=2
+        em.add_field(name=res.display_name,value=login,inline=False)
+        fields+=1
         if(fields>=24):
             await ctx.send(embed=em)
             em=discord.Embed()
