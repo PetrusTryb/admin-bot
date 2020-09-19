@@ -211,7 +211,11 @@ async def whoisCoro(ctx):
     for user in ctx.message.mentions:
         try:
             nick = db["discords"][str(user.id)]
-            await ctx.send(f"Użytkownik {user.display_name} posiada konto o nazwie {nick}.")
+            perm="👑 Admin" if isGod(user.id) else "👨 Użytkownik"
+            embed=discord.Embed(title=user.display_name, url=f"https://tryton.vlo.gda.pl/u/{nick}", description=perm)
+            embed.add_field(name="Login na serwerze:", value=nick, inline=False)
+            embed.add_field(name="Baza danych:", value=f"db{nick}", inline=False)
+            await ctx.send(embed=embed)
         except:
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Użytkownik {user.display_name} nie posiada konta na serwerze.")
@@ -223,7 +227,11 @@ async def whoisCoro(ctx):
             for i in db["discords"]:
                 if db["discords"][i]==user:
                     res = await bot.fetch_user(int(i))
-                    await ctx.send(f"Właścicielem konta {user} jest {res.display_name}.")
+                    perm="👑 Admin" if isGod(i) else "👨 Użytkownik"
+                    embed=discord.Embed(title=res.display_name, url=f"https://tryton.vlo.gda.pl/u/{user}", description=perm)
+                    embed.add_field(name="Login na serwerze:", value=user, inline=False)
+                    embed.add_field(name="Baza danych:", value=f"db{user}", inline=False)
+                    await ctx.send(embed=embed)
                     found=True
                     break
             if not found:
@@ -249,7 +257,7 @@ async def whoamiCoro(ctx):
         embed=discord.Embed(title=ctx.author.display_name, url=f"https://tryton.vlo.gda.pl/u/{nick}", description=perm)
         embed.add_field(name="Login na serwerze:", value=nick, inline=False)
         embed.add_field(name="Baza danych:", value=f"db{nick}", inline=False)
-        embed.set_footer(text="Jeśli zapomniałeś swoich haseł, wpisz `/password`")
+        embed.set_footer(text="Jeśli zapomniałeś swoich haseł, wpisz /password")
         await ctx.send(embed=embed)
     except:
         await ctx.message.add_reaction('❌')
