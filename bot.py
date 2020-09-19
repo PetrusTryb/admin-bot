@@ -271,7 +271,7 @@ async def usersCoro(ctx):
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
         em.add_field(" ",res.display_name)
-        em.add_field(" ",db["discords"])
+        em.add_field(" ",db["discords"][i])
         if(isGod(int(i))):
             em.add_field(" ","👑 administrator")
         else:
