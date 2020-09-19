@@ -272,7 +272,7 @@ async def usersCoro(ctx):
         res = await bot.fetch_user(int(i))
         login=db["discords"][str(i)]
         perm="admin" if isGod(int(i)) else "user"
-        em.add_field(name=res.display_name,value=perm,inline=False)
+        em.add_field(name=res.display_name,value=perm)
         em.add_field(name=login,value=f"https://tryton.vlo.gda.pl/u/{login}")
         fields+=2
         if(fields>=24):
