@@ -276,6 +276,7 @@ async def usersCoro(ctx):
             em.add_field(name=" ",value="👑 admin")
         else:
             em.add_field(name=" ",value="👨 user")
+    await ctx.send("message")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
