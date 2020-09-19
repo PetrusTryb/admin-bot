@@ -269,9 +269,9 @@ async def usersCoro(ctx):
     em.add_field(name="Login Tryton",value=" ")
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
-        perm="admin" if isGod(int(i)) else ""
+        perm="admin" if isGod(int(i)) else "user"
         em.add_field(name=res.display_name,value=perm)
-        em.add_field(name=db["discords"][i],value="")
+        em.add_field(name=db["discords"][str(i)],value=" ")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
