@@ -265,18 +265,17 @@ async def users(ctx):
 
 async def usersCoro(ctx):
     em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy zarejestrowani na serwerze Tryton:")
-    em.add_field(name="Nick Discord",value="")
-    em.add_field(name="Login Tryton",value="")
-    em.add_field(name="Uprawnienia",value="")
+    em.add_field(name="Nick Discord",value=" ")
+    em.add_field(name="Login Tryton",value=" ")
+    em.add_field(name="Uprawnienia",value=" ")
     for i in db["discords"]:
         res = await bot.fetch_user(int(i))
-        em.add_field(name="",value=res.display_name)
-        em.add_field(name="",value=db["discords"][i])
-        await ctx.send(i)
+        em.add_field(name=" ",value=res.display_name)
+        em.add_field(name=" ",value=db["discords"][i])
         if(isGod(int(i))):
-            em.add_field(name="",value="👑 admin")
+            em.add_field(name=" ",value="👑 admin")
         else:
-            em.add_field(name="",value="👨 user")
+            em.add_field(name=" ",value="👨 user")
     await ctx.send(embed=em)
     await ctx.message.remove_reaction('⌛', bot.user)
 
