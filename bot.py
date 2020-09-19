@@ -252,6 +252,22 @@ async def whoamiCoro(ctx):
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
+@commands.cooldown(1,10)
+@bot.command(help="Pokazuje pełną listę użytkowników")
+async def users(ctx):
+    """ Show full users list """
+    if not isGod(ctx.author.id):
+        await ctx.message.add_reaction('🛑')
+        await ctx.send("Nie dla psa! Dla Adminów to!")
+        return
+    await ctx.message.add_reaction('⌛')
+    await secondQueue.addJob(whoamiCoro(ctx))
+
+async def usersCoro(ctx):
+    embed=discord.Embed(title="<h2>Wykazużytkowników</h2><table><tr><th><strong>Discord</strong></th><th><strong>Typkonta</strong></th><th><strong>Login</strong></th></tr><tr><td>abc</td><td><span>admin</span></td><td>s1</td></tr><tr><td>def</td><td></td><td>s2</td></tr><tr><td>ghi</td><td></td><td>s3</td></tr><tr><td>jkl</td><td><span>admin</span></td><td>s4</td></tr><tr><td>mno</td><td><span>admin</span></td><td>s5</td></tr><tr><td>pqr</td><td></td><td>s6</td></tr></table>")
+    await ctx.send(embed=embed)
+    await ctx.message.remove_reaction('⌛', bot.user)
+
 @bot.event
 async def on_command_error(ctx,error):
     await ctx.message.add_reaction('❌')
