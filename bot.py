@@ -265,9 +265,9 @@ async def users(ctx):
 
 async def usersCoro(ctx):
     em=discord.Embed(title="Wykaz użytkowników",description="Oto wszyscy użytkownicy aktualnie zarejestrowani na serwerze Tryton:")
-    em.add_field("Discord"," ")
-    em.add_field("Login Tryton"," ")
-    em.add_field("Uprawnienia"," ")
+    em.add_field("Discord","x")
+    em.add_field("Login Tryton","y")
+    em.add_field("Uprawnienia","z")
     for i in db["discords"]:
         await ctx.send(i)
         res = await bot.fetch_user(int(i))
