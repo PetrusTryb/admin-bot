@@ -117,9 +117,10 @@ async def registerCoro(ctx):
             embed.add_field(name="Utworzono dla Ciebie konto na serwerze Tryton", value="https://tryton.vlo.gda.pl", inline=False)
             embed.add_field(name="Login", value=f"```{out}```", inline=False)
             embed.add_field(name="Hasło", value=f"```{newdata[0]}```", inline=False)
+            embed.add_field(name="**Zaloguj się jednym kliknięciem!**",value=link,inline=False)
             embed.add_field(name="Nazwa bazy danych", value=f"```db{out}```", inline=False)
             embed.add_field(name="Hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
-            embed.set_footer(text="Do menedżera plików możesz zalogować się również za pomocą linka: "+link)
+            embed.set_footer(text="Jeśli kiedyś zapomnisz hasła, użyj komendy /password")
             await user.send(embed=embed)
             #await user.send(f"**Utworzono dla Ciebie konto na serwerze Tryton!**\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nNazwa bazy danych: `db{out}`\nHasło do bazy danych: `{newdata[1]}`")
         else:
