@@ -112,7 +112,7 @@ async def registerCoro(ctx):
             await ctx.send(f"Utworzono użytkownika: {out}")   
             newdata = recovery(user.id)
             linkConfig=str('{"t":"sftp","c":{"p":"'+newdata[0]+'"} }').encode("ascii")
-            link=f"https://tryton.vlo.gda.pl/sftp/#/c/_/{out}/{base64.b64encode(linkConfig)}"
+            link=f"https://tryton.vlo.gda.pl/sftp/#/c/_/{out}/{base64.b64encode(linkConfig)}".replace("'","")
             embed=discord.Embed(title="Tryton", url="https://tryton.vlo.gda.pl", description="Sleep less, code more!", color=0x11ff00)
             embed.add_field(name="Utworzono dla Ciebie konto na serwerze Tryton", value="https://tryton.vlo.gda.pl", inline=False)
             embed.add_field(name="Login", value=f"```{out}```", inline=False)
