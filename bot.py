@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import base64
 import asyncio
 import discord
 import logging
@@ -110,7 +111,17 @@ async def registerCoro(ctx):
             await ctx.message.add_reaction('📬')
             await ctx.send(f"Utworzono użytkownika: {out}")   
             newdata = recovery(user.id)
-            await user.send(f"**Utworzono dla Ciebie konto na serwerze Tryton!**\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nNazwa bazy danych: `db{out}`\nHasło do bazy danych: `{newdata[1]}`")
+            linkConfig=str({"t":"sftp","c":{"p":newdata[0]}}).encode("ascii")
+            link=f"https://tryton.vlo.gda.pl/sftp/#/c/_/{out}/{base64.b64encode(linkConfig)}"
+            embed=discord.Embed(title="Tryton", url="https://tryton.vlo.gda.pl", description="Sleep less, code more!", color=0x11ff00)
+            embed.add_field(name="Utworzono dla Ciebie konto na serwerze Tryton", value="https://tryton.vlo.gda.pl", inline=False)
+            embed.add_field(name="Login", value=f"```{out}```", inline=False)
+            embed.add_field(name="Hasło", value=f"```{newdata[0]}```", inline=False)
+            embed.add_field(name="Nazwa bazy danych", value=f"```db{out}```", inline=False)
+            embed.add_field(name="Hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
+            embed.set_footer(text="Do menedżera plików możesz zalogować się również za pomocą linka: "+link)
+            await user.send(embed=embed)
+            #await user.send(f"**Utworzono dla Ciebie konto na serwerze Tryton!**\nWięcej informacji: https://tryton.vlo.gda.pl/\nLogin: `{out}`\nHasło do przesyłania plików: `{newdata[0]}`\nNazwa bazy danych: `db{out}`\nHasło do bazy danych: `{newdata[1]}`")
         else:
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Nie można utworzyć konta dla: {user}")
