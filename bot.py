@@ -194,7 +194,12 @@ async def passwordCoro(ctx):
         logging.info(f"Resetted password: {db['discords'][str(ctx.author.id)]}")
         await ctx.message.add_reaction('📬')
         await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
-        await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
+        embed=discord.Embed(title="Tryton", url="https://tryton.vlo.gda.pl", description="Sleep less, code more!", color=0x44ff00)
+        embed.add_field(name="Twoje hasła zostały zresetowane", value="https://tryton.vlo.gda.pl", inline=False)
+        embed.add_field(name="Nowe hasło", value=f"```{newdata[0]}```", inline=False)
+        embed.add_field(name="Nowe hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
+        await ctx.author.send(embed=embed)
+        #await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except:
         await ctx.message.add_reaction('❌')
         await ctx.send("Nie udało się zresetować hasła. Prawdopodobnie nie masz jeszcze konta na serwerze Tryton.")
