@@ -117,7 +117,7 @@ async def registerCoro(ctx):
             embed.add_field(name="Hasło", value=f"```{newdata[0]}```", inline=False)
             embed.add_field(name="Nazwa bazy danych", value=f"```db{out}```", inline=False)
             embed.add_field(name="Hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
-            embed.set_footer(text="Jeśli kiedyś zapomnisz hasła, użyj komendy /password")
+            embed.set_footer(text="Jeśli kiedyś zapomnisz hasła, użyj komendy $password")
             await user.send(embed=embed)
         else:
             await ctx.message.add_reaction('⚠')
@@ -270,7 +270,7 @@ async def whoamiCoro(ctx):
         embed=discord.Embed(title=ctx.author.display_name, url=f"https://tryton.vlo.gda.pl/u/{nick}", description=perm)
         embed.add_field(name="Login na serwerze:", value=nick, inline=False)
         embed.add_field(name="Baza danych:", value=f"db{nick}", inline=False)
-        embed.set_footer(text="Jeśli zapomniałeś swoich haseł, wpisz /password")
+        embed.set_footer(text="Jeśli zapomniałeś swoich haseł, wpisz $password")
         await ctx.send(embed=embed)
     except:
         await ctx.message.add_reaction('❌')
@@ -310,7 +310,7 @@ async def on_command_error(ctx,error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("Nie spamuj! Możesz ponownie użyć tej komendy dopiero za {:.1f}s".format(error.retry_after))
     elif isinstance(error, commands.CommandNotFound):
-        await ctx.send("Nieprawidłowe polecenie. Wpisz `/help`, aby uzyskać listę dostępnych poleceń.")
+        await ctx.send("Nieprawidłowe polecenie. Wpisz `$help`, aby uzyskać listę dostępnych poleceń.")
     else:
         await ctx.send("Wystąpił problem, proszę skontaktuj się z administracją.")
 
