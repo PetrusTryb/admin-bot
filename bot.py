@@ -195,7 +195,7 @@ async def passwordCoro(ctx):
         await ctx.message.add_reaction('📬')
         await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
         embed=discord.Embed(title="Tryton", url="https://tryton.vlo.gda.pl", description="Sleep less, code more!", color=0x44ff00)
-        embed.add_field(name="Twoje hasła zostały zresetowane", value="https://tryton.vlo.gda.pl", inline=False)
+        embed.add_field(name="Przywracanie dostępu do konta", value="Twoje hasła zostały zresetowane", inline=False)
         embed.add_field(name="Nowe hasło", value=f"```{newdata[0]}```", inline=False)
         embed.add_field(name="Nowe hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
         await ctx.author.send(embed=embed)
