@@ -297,7 +297,7 @@ async def usersCoro(ctx):
         login=db["discords"][str(i)]
         em.add_field(name=res.display_name,value=f"https://tryton.vlo.gda.pl/u/{login}",inline=False)
         fields+=1
-        if(fields>=24):
+        if fields>=25:
             await ctx.send(embed=em)
             em=discord.Embed()
             fields=0
