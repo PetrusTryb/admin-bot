@@ -251,7 +251,7 @@ class MortalManager:
         with open(config["passgen"]["wordsfile"], "r") as wordsfile:
             wordlist = list(PasswordGenerator.filter_words(wordsfile.read().split('\n')))
 
-        wordlist = PasswordGenerator.filter_words(wordlist, tuple(config["passgen"]["word_length"]))
+        wordlist = list(PasswordGenerator.filter_words(wordlist, tuple(config["passgen"]["word_length"])))
 
         passgen = PasswordGenerator(
         wordlist, 
