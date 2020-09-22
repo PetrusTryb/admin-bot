@@ -8,6 +8,42 @@ import random
 import re
 import math
 
+class PasswordGenerator:
+    def __init__(self, wordlist, extra_chars='123456789', word_count=(4,5), extra_chars_count=(5,8), uppercase_prob=0.1, force_length=None):
+        self.wordlist = wordlist
+        if word_count:
+            self.word_count = word_count
+
+        if extra_chars:
+            self.extra_chars = extra_chars
+
+        if extra_chars_count:
+            self.extra_chars_count = extra_chars_count
+
+        self.uppercase_prob = uppercase_prob
+        self.force_length = force_length
+
+    def generate(self):
+        words = random.choices(self.wordlist, k=random.randint(*self.word_count))
+        pass_chars = list("".join(words))
+
+        if self.force_length:
+            pass_chars = pass_chars[:self.force_length]
+
+        for _ in range(random.randint(*self.extra_chars_count)):
+            pass_chars[random.randint(0, len(pass_chars)-1)] = random.choice(self.extra_chars)
+
+        pass_chars = list(map(lambda x: x.upper() if random.random() < self.uppercase_prob else x, pass_chars))
+
+
+        return "".join(pass_chars)
+
+
+    @staticmethod
+    def filter_words(wordlist, length=(4,6)):
+        word_filter = re.compile('^[a-zA-Z]{%d,%d}$' % length)
+        return filter(lambda x: word_filter.match(x), wordlist)
+
 class UserAPI:
     def __init__(self, base_dir, user_group, samplequota):
         self.base_dir = base_dir
@@ -123,7 +159,7 @@ class UnsafeNameError(Exception):
         self.name = name
 
 class MortalManager:
-    def __init__(self, userapi, phpapi, mortals=None, dbapi=None, name_digits=3):
+    def __init__(self, userapi, phpapi, passgen, mortals=None, dbapi=None, name_digits=3):
         if mortals:
             self.mortals = set(mortals)
         else:
@@ -138,6 +174,7 @@ class MortalManager:
         self.phpapi = phpapi
         self.phpapi.restart()
         self.userapi = userapi
+        self.passgen = passgen
         logging.info("Created Mortal Manager.")
 
     #auxiliary methods
@@ -150,10 +187,6 @@ class MortalManager:
     def is_name_safe(self, name):
         if re.match('^(s\\d{1,%d})$' % self.name_digits, name):
             return True
-    
-    def generate_password(self, length=12):
-        return "".join(random.choices(string.ascii_letters+string.digits, k=length))
-
 
     #management methods
     def create_mortal(self):
@@ -199,8 +232,8 @@ class MortalManager:
         if not self.is_name_safe(name):
             raise UnsafeNameError(name)
 
-        dbpass = self.generate_password()
-        userpass = self.generate_password()
+        dbpass = self.passgen.generate()
+        userpass = self.passgen.generate()
         
         self.userapi.set_password(name, userpass)
         self.dbapi.set_password(name, dbpass)
@@ -215,7 +248,21 @@ class MortalManager:
         userapi = UserAPI(config["userapi"]["base_dir"], config["userapi"]["user_group"], config["userapi"]["samplequota"])
         phpapi = PHPPoolApi(config["phpapi"]["conf_dir"], config["phpapi"]["template"], config["phpapi"]["service"])
 
-        return MortalManager(userapi, phpapi, mortals=db['mortals'], dbapi=dbapi)
+        with open(config["passgen"]["wordsfile"], "r") as wordsfile:
+            wordlist = list(PasswordGenerator.filter_words(wordsfile.read().split('\n')))
+
+        wordlist = PasswordGenerator.filter_words(wordlist, tuple(config["passgen"]["word_length"]))
+
+        passgen = PasswordGenerator(
+        wordlist, 
+        extra_chars = config["passgen"]["extra_chars"],
+        word_count = tuple(config["passgen"]["word_count"]),
+        extra_chars_count = tuple(config["passgen"]["extra_chars_count"]),
+        uppercase_prob = float(config["passgen"]["uppercase_prob"]),
+        force_length = int(config["passgen"]["force_length"])
+        )
+
+        return MortalManager(userapi, phpapi, passgen, mortals=db['mortals'], dbapi=dbapi)
 
     def dump_save(self):
         config = {

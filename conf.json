@@ -9,6 +9,15 @@
     }, 
     "userapi": {
         "base_dir": "/smietnik", "user_group": "smiertelnicy", "samplequota": "samplequota", "admins": [
-            "621605375040552962", "331576888508284938", "423569902717370378", "506165151121145888", "689035469044187167"]
+            "621605375040552962", "331576888508284938", "423569902717370378", "506165151121145888", "689035469044187167", "512247944267956227"]
+    },
+    "passgen": {
+        "wordsfile": "./words2.txt",
+        "word_length": [4,6],
+        "extra_chars": "123456789",
+        "word_count": [4,5],
+        "extra_chars_count": [2,3],
+        "uppercase_prob": 0.1,
+        "force_length": 12
     }
 }
