@@ -53,7 +53,7 @@ def getMentionedUsers(ctx):
 # --------------- Initial setup ---------------
 
 # Logs
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, filename="/var/log/adminbot.log", filemode="w+")
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 logging.info("Starting new session...")
 
 # Queue
