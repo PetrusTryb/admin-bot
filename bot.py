@@ -152,7 +152,8 @@ async def killCoro(ctx):
             # Message success
             logging.info(f"Deleted user: {user.display_name}")
             await ctx.send(f"Usunięto konto: {user.display_name}")
-        except:
+        except Exception as e:
+            logging.exception(f"Exception while killing user: {e}")
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Nie udało się usunąć konta użytkownika {user.display_name}")
 
@@ -173,7 +174,8 @@ async def killCoro(ctx):
                 # Message success
                 logging.info(f"Removed user: {user}")
                 await ctx.send(f"Usunięto konto: {user}")
-        except:
+        except Exception as e:
+            logging.exception(f"Exception while killing user: {e}")
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Nie udało się usunąć konta {user}")
     
@@ -200,7 +202,8 @@ async def passwordCoro(ctx):
         embed.add_field(name="Nowe hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
         await ctx.author.send(embed=embed)
         #await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
-    except:
+    except Exception as e:
+        logging.exception(f"Password reset failed: {e}")
         await ctx.message.add_reaction('❌')
         await ctx.send("Nie udało się zresetować hasła. Prawdopodobnie nie masz jeszcze konta na serwerze Tryton.")
 
@@ -229,7 +232,8 @@ async def whoisCoro(ctx):
             embed.add_field(name="Login na serwerze:", value=nick, inline=False)
             embed.add_field(name="Baza danych:", value=f"db{nick}", inline=False)
             await ctx.send(embed=embed)
-        except:
+        except Exception as e:
+            logging.exception(f"Whois lookup failed: {e}")
             await ctx.message.add_reaction('⚠')
             await ctx.send(f"Użytkownik {user.display_name} nie posiada konta na serwerze.")
 
@@ -272,7 +276,8 @@ async def whoamiCoro(ctx):
         embed.add_field(name="Baza danych:", value=f"db{nick}", inline=False)
         embed.set_footer(text="Jeśli zapomniałeś swoich haseł, wpisz $password")
         await ctx.send(embed=embed)
-    except:
+    except Exception as e:
+        logging.exception(f"Whoami does not know who are You: {e}")
         await ctx.message.add_reaction('❌')
         await ctx.send(f"Nie utworzono dla Ciebie żadnego konta. Jeśli chcesz posiadać konto, skontaktuj się z administracją.")
 
