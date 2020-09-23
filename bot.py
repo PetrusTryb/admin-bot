@@ -5,6 +5,7 @@ import base64
 import asyncio
 import discord
 import logging
+from systemd.journal import JournaldLogHandler
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -53,7 +54,22 @@ def getMentionedUsers(ctx):
 # --------------- Initial setup ---------------
 
 # Logs
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+# get an instance of the logger object this module will use
+logger = logging.getLogger("adminbot")
+
+# instantiate the JournaldLogHandler to hook into systemd
+journald_handler = JournaldLogHandler()
+
+# set a formatter to include the level name
+journald_handler.setFormatter(logging.Formatter(
+    '[%(levelname)s] %(asctime)s - %(message)s'
+))
+
+# add the journald handler to the current logger
+logger.addHandler(journald_handler)
+
+# optionally set the logging level
+logger.setLevel(logging.INFO)
 logging.info("Starting new session...")
 
 # Queue
