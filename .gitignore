@@ -141,3 +141,4 @@ cython_debug/
 
 # Project stuff
 db.json
+*.service
