@@ -50,5 +50,5 @@ Bot configuration can be done using the `conf.json` file.
 - extra_chars - Additional characters used in passwords
 - word_count - Minimum and maximum passwords word count
 - extra_chars_count - Minimum and maximum number of extra characters in passwords
-- uppercase_prob - Probability of uppercase word in passwords
-- force_length - Minimum length for all passwords
+- uppercase_prob - Probability of uppercase letter in passwords
+- force_length - Maximum length for all passwords
