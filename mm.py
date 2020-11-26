@@ -89,7 +89,7 @@ class MariaDBApi:
             with conn.cursor() as cur:
                 cur.execute("CREATE USER '%s'@'%s';" % (name, self.host))
                 cur.execute("CREATE DATABASE %s;" % dbname)
-                cur.execute("GRANT ALL PRIVILEGES ON %s.* TO %s@%s;" % (dbname, name, self.host))
+                cur.execute("GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s';" % (dbname, name, self.host))
             conn.commit()
         except:
             raise
