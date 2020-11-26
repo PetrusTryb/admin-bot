@@ -5,7 +5,7 @@
         "template": "[{0}]\nuser = $pool\ngroup = www-data\nlisten = /run/php/mortal/$pool.sock\nlisten.owner = www-data\nlisten.group = www-data\nprocess.priority = 0\npm = ondemand\npm.max_children = 1\nchroot = /smietnik/$pool/content/\nchdir = /"
     }, 
     "dbapi": {
-        "sock": "/var/run/mysqld/mysqld.sock", "host": "127.0.0.1"
+        "sock": "/var/run/mysqld/mysqld.sock", "host": "%"
     }, 
     "userapi": {
         "base_dir": "/smietnik", "user_group": "smiertelnicy", "samplequota": "samplequota", "admins": [
