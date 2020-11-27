@@ -369,6 +369,19 @@ async def on_command_error(ctx,error):
     else:
         await ctx.send("Wystąpił problem, proszę skontaktuj się z administracją.")
 
+@commands.cooldown(1,10)
+@bot.command(help="Testowa funkcja - wyświetla wszystkich użytkowników serwera")
+async def allusers(ctx):
+    """ Remove account """
+    if not isGod(ctx.author.id):
+        await ctx.message.add_reaction('🛑')
+        await ctx.send("Nie dla psa! Dla Adminów to!")
+        return
+
+    await ctx.message.add_reaction('⌛')
+    await ctx.send(str(ctx.guild.members))
+    await ctx.message.remove_reaction('⌛', bot.user)
+
 def main():
     # Run queues and bot
     asyncio.get_event_loop().run_until_complete(mainQueue.start())
