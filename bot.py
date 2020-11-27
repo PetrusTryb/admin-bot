@@ -42,9 +42,16 @@ def recovery(discord_id):
     user=db["discords"][str(discord_id)]
     return serverManager.password_reset(user)
 
-def getMentionedUsers(ctx):
+async def getMentionedUsers(ctx, db):
     # return all users mentioned individually and from ranks
+    # if only word "all" in command - return all users in database
     users = []
+
+    if ''.join(ctx.message.content.lower().split()[1:]) == "all":
+        for userid in db["discords"]:
+            users.append(await bot.fetch_user(int(userid)))
+        return users
+
     users.extend(ctx.message.mentions)
     for rank in ctx.message.role_mentions:
         users.extend(rank.members)
@@ -101,7 +108,7 @@ async def register(ctx):
     await mainQueue.addJob(registerCoro(ctx))
 
 async def registerCoro(ctx):
-    for user in getMentionedUsers(ctx):
+    for user in await getMentionedUsers(ctx, db):
         # check if user already exists
         if str(user.id) in db["discords"]:
             await ctx.message.add_reaction('⚠')
@@ -240,7 +247,7 @@ async def passwordCoro(ctx):
             return
 
         # reset by discord username
-        for user in getMentionedUsers(ctx):
+        for user in await getMentionedUsers(ctx, db):
             await passwordReset(ctx, user)
 
         # reset by server username (s1, s2, etc..)
@@ -274,7 +281,7 @@ async def whois(ctx):
 
 async def whoisCoro(ctx):
     # check by discord username
-    for user in getMentionedUsers(ctx):
+    for user in await getMentionedUsers(ctx, db):
         try:
             nick = db["discords"][str(user.id)]
             perm="👑 Admin" if isGod(user.id) else "👨 Użytkownik"
@@ -368,19 +375,6 @@ async def on_command_error(ctx,error):
         await ctx.send("Nieprawidłowe polecenie. Wpisz `$help`, aby uzyskać listę dostępnych poleceń.")
     else:
         await ctx.send("Wystąpił problem, proszę skontaktuj się z administracją.")
-
-@commands.cooldown(1,10)
-@bot.command(help="Testowa funkcja - wyświetla wszystkich użytkowników serwera")
-async def allusers(ctx):
-    """ Remove account """
-    if not isGod(ctx.author.id):
-        await ctx.message.add_reaction('🛑')
-        await ctx.send("Nie dla psa! Dla Adminów to!")
-        return
-
-    await ctx.message.add_reaction('⌛')
-    await ctx.send(str(ctx.guild.members))
-    await ctx.message.remove_reaction('⌛', bot.user)
 
 def main():
     # Run queues and bot
