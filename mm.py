@@ -87,9 +87,11 @@ class MariaDBApi:
 
         try:
             with conn.cursor() as cur:
+                cur.execute("CREATE USER '%s'@'%%' REQUIRE SSL;" % (name))
                 cur.execute("CREATE USER '%s'@'%s';" % (name, self.host))
                 cur.execute("CREATE DATABASE %s;" % dbname)
                 cur.execute("GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%s';" % (dbname, name, self.host))
+                cur.execute("GRANT ALL PRIVILEGES ON %s.* TO '%s'@'%%';" % (dbname, name))
             conn.commit()
         except:
             raise
@@ -106,6 +108,7 @@ class MariaDBApi:
 
         with conn.cursor() as cur:
             try:
+                cur.execute("DROP USER '%s'@'%%';" % (name))
                 cur.execute("DROP USER '%s'@'%s';" % (name, self.host))
                 conn.commit()
             except pymysql.err.OperationalError as e:
@@ -129,6 +132,7 @@ class MariaDBApi:
         try:
             with conn.cursor() as cur:
                 cur.execute("ALTER USER '%s'@'%s' IDENTIFIED BY '%s'" % (name, self.host, password))
+                cur.execute("ALTER USER '%s'@'%%' IDENTIFIED BY '%s'" % (name, password))
                 conn.commit()
         except:
             raise
