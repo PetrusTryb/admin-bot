@@ -213,12 +213,12 @@ async def passwordReset(ctx, user, single=False):
         logging.info(f"Resetted password: {db['discords'][str(user.id)]}")
         if single:
             await ctx.message.add_reaction('📬')
-        await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(user.id)]}")
         embed=discord.Embed(title="Tryton", url="https://tryton.vlo.gda.pl", description="Sleep less, code more!", color=0x44ff00)
         embed.add_field(name="Przywracanie dostępu do konta", value="Twoje hasła zostały zresetowane", inline=False)
         embed.add_field(name="Nowe hasło", value=f"```{newdata[0]}```", inline=False)
         embed.add_field(name="Nowe hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
         await user.send(embed=embed)
+        await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(user.id)]}")
         #await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except Exception as e:
         logging.exception(f"Password reset failed: {e}")
@@ -274,7 +274,7 @@ async def whois(ctx):
 
 async def whoisCoro(ctx):
     # check by discord username
-    for user in ctx.message.mentions:
+    for user in getMentionedUsers(ctx):
         try:
             nick = db["discords"][str(user.id)]
             perm="👑 Admin" if isGod(user.id) else "👨 Użytkownik"
