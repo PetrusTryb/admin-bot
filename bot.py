@@ -183,7 +183,7 @@ async def killCoro(ctx):
     # Remove by server username (s1, s2, etc..)
     for user in ctx.message.content.split()[1:]:
         try:
-            if "@" not in user:
+            if "@" not in user and user.lower() != "all":
                 serverManager.remove_mortal(user)
 
                 # Update db
@@ -252,7 +252,7 @@ async def passwordCoro(ctx):
 
         # reset by server username (s1, s2, etc..)
         for user in ctx.message.content.split()[1:]:
-            if "@" not in user:
+            if "@" not in user and user.lower() != "all":
                 found = False
                 for i in db["discords"]:
                     if db["discords"][i]==user:
@@ -296,7 +296,7 @@ async def whoisCoro(ctx):
 
     # Check by server username (s1, s2, etc..)
     for user in ctx.message.content.split()[1:]:
-        if "@" not in user:
+        if "@" not in user and user.lower() != "all":
             found = False
             for i in db["discords"]:
                 if db["discords"][i]==user:
