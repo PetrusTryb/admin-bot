@@ -205,23 +205,57 @@ async def password(ctx):
     await ctx.message.add_reaction('⌛')
     await mainQueue.addJob(passwordCoro(ctx))
 
-async def passwordCoro(ctx):
+async def passwordReset(ctx, user, single=False):
+    """ Reset provided user's password and send according message """
     try:
-        newdata = recovery(ctx.author.id)
+        newdata = recovery(user.id)
 
-        logging.info(f"Resetted password: {db['discords'][str(ctx.author.id)]}")
-        await ctx.message.add_reaction('📬')
-        await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(ctx.author.id)]}")
+        logging.info(f"Resetted password: {db['discords'][str(user.id)]}")
+        if single:
+            await ctx.message.add_reaction('📬')
+        await ctx.send(f"Pomyślnie ustawiono nowe hasła dla: {db['discords'][str(user.id)]}")
         embed=discord.Embed(title="Tryton", url="https://tryton.vlo.gda.pl", description="Sleep less, code more!", color=0x44ff00)
         embed.add_field(name="Przywracanie dostępu do konta", value="Twoje hasła zostały zresetowane", inline=False)
         embed.add_field(name="Nowe hasło", value=f"```{newdata[0]}```", inline=False)
         embed.add_field(name="Nowe hasło bazy danych", value=f"```{newdata[1]}```", inline=False)
-        await ctx.author.send(embed=embed)
+        await user.send(embed=embed)
         #await ctx.author.send(f"Nowe hasło do przesyłania plików: `{newdata[0]}`\nNowe hasło do bazy danych: `{newdata[1]}`")
     except Exception as e:
         logging.exception(f"Password reset failed: {e}")
-        await ctx.message.add_reaction('❌')
-        await ctx.send("Nie udało się zresetować hasła. Prawdopodobnie nie masz jeszcze konta na serwerze Tryton.")
+        if single:
+            await ctx.message.add_reaction('❌')
+            await ctx.send("Nie udało się zresetować hasła. Prawdopodobnie nie masz jeszcze konta na serwerze Tryton.")
+        else:
+            await ctx.send(f"Nie udało się zresetować hasła dla użytkownika {user.display_name}. Prawdopodobnie nie ma on jeszcze konta na serwerze Tryton.")
+
+async def passwordCoro(ctx):
+    if len(ctx.message.content.split()) == 1:
+        # no mentioned users - reset author's password
+        await passwordReset(ctx, ctx.author, single=True)
+    else:
+        # some mentions - check permissions
+        if not isGod(ctx.author.id):
+            await ctx.message.add_reaction('🛑')
+            await ctx.send("Normalni użytkownicy nie mogą resetować haseł innych osób.\nJeżeli próbujesz zmienić swoje hasło to użyj samej komendy bez oznaczania nikogo.")
+            return
+
+        # reset by discord username
+        for user in getMentionedUsers(ctx):
+            await passwordReset(ctx, user)
+
+        # reset by server username (s1, s2, etc..)
+        for user in ctx.message.content.split()[1:]:
+            if "@" not in user:
+                found = False
+                for i in db["discords"]:
+                    if db["discords"][i]==user:
+                        found = True
+                        res = await bot.fetch_user(int(i))
+                        await passwordReset(ctx, res)
+                        break
+                if not found:
+                    await ctx.message.add_reaction('⚠')
+                    await ctx.send(f"Użytkownik {user} nie istnieje.")
 
     await ctx.message.remove_reaction('⌛', bot.user)
 
